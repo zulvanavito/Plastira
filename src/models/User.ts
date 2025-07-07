@@ -18,5 +18,4 @@ const UserSchema: Schema = new Schema<IUser>({
   createdAt: { type: Date, default: Date.now },
 });
 
-// ⛔ Avoid model overwrite error in Next.js (Hot reload safe)
 export default models.User || model<IUser>("User", UserSchema);

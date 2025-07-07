@@ -1,7 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import bcrypt from "bcryptjs";
 import { dbConnect } from "@/lib/db";
 import User from "@/models/User";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 export default async function handler(
   req: NextApiRequest,
@@ -11,27 +12,41 @@ export default async function handler(
 
   try {
     await dbConnect();
+
     const { name, email, password } = req.body;
 
     if (!name || !email || !password) {
-      return res.status(400).json({ msg: "Semua field harus diisi" });
+      return res.status(400).json({ msg: "Semua field wajib diisi" });
     }
 
     const existing = await User.findOne({ email });
-    if (existing) return res.status(400).json({ msg: "Email sudah dipakai" });
+    if (existing) {
+      return res.status(400).json({ msg: "Email sudah terdaftar" });
+    }
 
     const hashed = await bcrypt.hash(password, 10);
-    const user = await User.create({ name, email, password: hashed });
 
-    res.status(201).json({
-      msg: "Register berhasil",
-      user: { name: user.name, email: user.email },
+    const allowedAdminEmails = ["admin@gmail.com"];
+    const role = allowedAdminEmails.includes(email) ? "admin" : "user";
+
+    const user = await User.create({
+      name,
+      email,
+      password: hashed,
+      role,
     });
+
+    const token = jwt.sign(
+      { id: user._id, role: user.role },
+      process.env.JWT_SECRET!,
+      { expiresIn: "7d" }
+    );
+
+    res.status(201).json({ msg: "Registrasi berhasil", token });
   } catch (err: unknown) {
     if (err instanceof Error) {
-      console.error("REGISTER ERROR:", err.message);
       return res.status(500).json({ msg: "Server error", error: err.message });
     }
-    res.status(500).json({ msg: "Terjadi kesalahan tak dikenal" });
+    res.status(500).json({ msg: "Unknown error" });
   }
 }

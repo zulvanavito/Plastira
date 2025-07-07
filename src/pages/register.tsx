@@ -8,32 +8,20 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import Link from "next/link";
 
-export default function LoginPage() {
+export default function RegisterPage() {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const res = await axios.post<{ token: string }>("/api/auth/login", {
-        email,
-        password,
-      });
-      const token = res.data.token;
-      localStorage.setItem("token", token);
-
-      const payload = JSON.parse(atob(token.split(".")[1]));
-      const role = payload.role;
-      toast.success("Login berhasil");
-
-      if (role === "admin") {
-        router.push("/admin/pickups");
-      } else {
-        router.push("/dashboard");
-      }
+      await axios.post("/api/auth/register", { name, email, password });
+      toast.success("Registrasi berhasil! Silakan login.");
+      router.push("/login");
     } catch {
-      toast.error("Login gagal");
+      toast.error("Registrasi gagal");
     }
   };
 
@@ -42,11 +30,23 @@ export default function LoginPage() {
       <Card className="w-full max-w-md shadow-md">
         <CardHeader>
           <CardTitle className="text-2xl text-center">
-            Masuk ke Akunmu
+            Daftar Akun Baru
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleLogin} className="space-y-4">
+          <form onSubmit={handleRegister} className="space-y-4">
+            <div>
+              <Label htmlFor="name">Nama</Label>
+              <Input
+                id="name"
+                type="text"
+                placeholder="Nama lengkap"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+              />
+            </div>
+
             <div>
               <Label htmlFor="email">Email</Label>
               <Input
@@ -72,12 +72,12 @@ export default function LoginPage() {
             </div>
 
             <Button type="submit" className="w-full">
-              Masuk
+              Daftar
             </Button>
             <p className="text-center text-sm">
-              Belum Punya Akun?{" "}
-              <a href="/register" className="text-blue-500 underline">
-                Daftar
+              Sudah Punya Akun?{" "}
+              <a href="/login" className="text-blue-500 underline">
+                Masuk
               </a>{" "}
             </p>
             <Link href="/">
