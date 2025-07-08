@@ -42,7 +42,34 @@ export default async function handler(
 
   if (req.method === "GET") {
     const pickups = await Pickup.find().populate("userId", "name email");
-    return res.status(200).json({ pickups });
+
+    const stats = {
+      total: pickups.length,
+      verified: pickups.filter((p) => p.status === "Verified").length,
+      rejected: pickups.filter((p) => p.status === "Rejected").length,
+      pending: pickups.filter((p) => p.status === "Pending").length,
+      pointsTotal: pickups.reduce((sum, p) => sum + (p.pointsAwarded || 0), 0),
+    };
+
+    return res.status(200).json({ pickups, stats });
+  }
+
+  if (req.method === "PATCH") {
+    const { id, note } = req.body;
+
+    const pickup = await Pickup.findById(id);
+    if (!pickup) return res.status(404).json({ msg: "Pickup tidak ditemukan" });
+
+    if (pickup.status !== "Pending") {
+      return res.status(400).json({ msg: "Pickup sudah diproses" });
+    }
+
+    pickup.status = "Rejected";
+    pickup.pointsAwarded = 0;
+    pickup.rejectionNote = note || "";
+    await pickup.save();
+
+    return res.status(200).json({ msg: "Pickup berhasil ditolak" });
   }
 
   return res.status(405).end(); // Method Not Allowed
