@@ -3,8 +3,9 @@ import axios from "axios";
 import { Bar, Pie } from "react-chartjs-2";
 import dynamic from "next/dynamic";
 import { handleExportCSV, handleExportExcel } from "@/utils/exportUtils";
-import { handleVerify } from "@/utils/verifyUtils"; // Import dari verifyUtils
-import { handleReject } from "@/utils/rejectUtils"; // Import dari rejectUtils
+import { handleVerify } from "@/utils/verifyUtils";
+import { handleReject } from "@/utils/rejectUtils";
+import { filterPickupsByStatus } from "@/utils/filterUtils"; // <-- BARU: Import fungsi filter
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -34,6 +35,13 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { toast } from "sonner";
 import clsx from "clsx";
 import router from "next/router";
@@ -87,6 +95,7 @@ export default function AdminPickupPage() {
   const [showDetail, setShowDetail] = useState(false);
   const [showReject, setShowReject] = useState(false);
   const [rejectReason, setRejectReason] = useState("");
+  const [filterStatus, setFilterStatus] = useState("All");
 
   /* --------------------------- Data Fetcher --------------------------- */
   const fetchData = useCallback(async () => {
@@ -108,6 +117,9 @@ export default function AdminPickupPage() {
   useEffect(() => {
     fetchData();
   }, [fetchData]);
+
+  // --- BARU: Gunakan fungsi dari file terpisah ---
+  const filteredPickups = filterPickupsByStatus(pickups, filterStatus);
 
   /* --------------------------- Render --------------------------- */
   const statCard = (title: string, value: number, color: string) => (
@@ -219,95 +231,114 @@ export default function AdminPickupPage() {
           {loading ? (
             <p className="text-center py-10">Loading...</p>
           ) : (
-            <Table>
-              <TableHeader>
-                <TableRow className="bg-green-50 hover:bg-green-5">
-                  {["User", "Jenis", "Berat", "Status", "Poin", "Aksi"].map(
-                    (h) => (
-                      <TableHead key={h} className="text-center text-black">
-                        {h}
-                      </TableHead>
-                    )
-                  )}
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {pickups.map((p) => (
-                  <TableRow
-                    key={p._id}
-                    className="even:bg-gray-50 hover:bg-gray-100 transition-colors"
-                  >
-                    <TableCell className="text-center">
-                      {p.userId.name}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      {p.plasticType}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      {p.weightKg} kg
-                    </TableCell>
-                    <TableCell className="text-center">
-                      <span
-                        className={clsx(
-                          "inline-block rounded-full px-3 py-1 text-sm font-semibold",
-                          {
-                            "bg-yellow-100 text-yellow-700":
-                              p.status === "Pending",
-                            "bg-green-100 text-green-700":
-                              p.status === "Verified",
-                            "bg-red-100 text-red-700": p.status === "Rejected",
-                          }
-                        )}
-                      >
-                        {p.status}
-                      </span>
-                    </TableCell>
-                    <TableCell className="text-center">
-                      {p.pointsAwarded}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      <div className="flex justify-center gap-1">
-                        <Button
-                          variant="default"
-                          size="sm"
-                          onClick={() => {
-                            setSelectedPickup(p);
-                            setShowDetail(true);
-                          }}
-                          className="bg-white text-black outline shadow-sm hover:bg-slate-100"
-                        >
-                          🔍
-                        </Button>
-                        {p.status === "Pending" && (
-                          <>
-                            <Button
-                              size="sm"
-                              onClick={() => handleVerify(p._id, fetchData)}
-                            >
-                              ✅ Verifikasi
-                            </Button>
+            <>
+              <div className="flex justify-end mb-4">
+                <Select onValueChange={setFilterStatus} defaultValue="All">
+                  <SelectTrigger className="w-[200px]">
+                    <SelectValue placeholder="Filter berdasarkan status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="All">Semua Status</SelectItem>
+                    <SelectItem value="Pending">Pending</SelectItem>
+                    <SelectItem value="Verified">Verified</SelectItem>
+                    <SelectItem value="Rejected">Rejected</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
 
-                            <Button
-                              size="sm"
-                              variant="destructive"
-                              onClick={() => {
-                                setSelectedPickup(p);
-                                setShowReject(true);
-                              }}
-                            >
-                              ❌
-                            </Button>
-                          </>
-                        )}
-                      </div>
-                    </TableCell>
+              <Table>
+                <TableHeader>
+                  <TableRow className="bg-green-50 hover:bg-green-5">
+                    {["User", "Jenis", "Berat", "Status", "Poin", "Aksi"].map(
+                      (h) => (
+                        <TableHead key={h} className="text-center text-black">
+                          {h}
+                        </TableHead>
+                      )
+                    )}
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {filteredPickups.map((p) => (
+                    <TableRow
+                      key={p._id}
+                      className="even:bg-gray-50 hover:bg-gray-100 transition-colors"
+                    >
+                      <TableCell className="text-center">
+                        {p.userId.name}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {p.plasticType}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {p.weightKg} kg
+                      </TableCell>
+                      <TableCell className="text-center">
+                        <span
+                          className={clsx(
+                            "inline-block rounded-full px-3 py-1 text-sm font-semibold",
+                            {
+                              "bg-yellow-100 text-yellow-700":
+                                p.status === "Pending",
+                              "bg-green-100 text-green-700":
+                                p.status === "Verified",
+                              "bg-red-100 text-red-700":
+                                p.status === "Rejected",
+                            }
+                          )}
+                        >
+                          {p.status}
+                        </span>
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {p.pointsAwarded}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        <div className="flex justify-center gap-2">
+                          <Button
+                            variant="default"
+                            size="sm"
+                            onClick={() => {
+                              setSelectedPickup(p);
+                              setShowDetail(true);
+                            }}
+                            className="bg-white text-black outline shadow-sm hover:bg-slate-100"
+                          >
+                            🔍
+                          </Button>
+                          {p.status === "Pending" && (
+                            <>
+                              <Button
+                                className="bg-lime-100 text-lime-500 hover:bg-lime-200 hover:text-lime-700 shadow-sm"
+                                size="sm"
+                                onClick={() => handleVerify(p._id, fetchData)}
+                              >
+                                ✅
+                              </Button>
+
+                              <Button
+                                className="bg-red-100 text-red-500 hover:bg-red-200 hover:text-red-700 shadow-sm"
+                                size="sm"
+                                variant="destructive"
+                                onClick={() => {
+                                  setSelectedPickup(p);
+                                  setShowReject(true);
+                                }}
+                              >
+                                ❌
+                              </Button>
+                            </>
+                          )}
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </>
           )}
 
-          {/* Logout */}
+          {/* Logout & Export Buttons */}
           <div className="flex justify-center gap-4">
             <Button
               variant="outline"
@@ -374,7 +405,6 @@ export default function AdminPickupPage() {
                 </p>
               )}
               <div className="mt-4 w-full h-72">
-                {/* --- BARU: Gunakan komponen Map yang dinamis --- */}
                 <Map
                   lat={selectedPickup.location.lat}
                   lng={selectedPickup.location.lng}
@@ -403,6 +433,7 @@ export default function AdminPickupPage() {
             />
 
             <Button
+              className="bg-rose-100 text-rose-500 hover:bg-rose-200 hover:text-rose-700 mt-2"
               size="sm"
               variant="destructive"
               onClick={() =>
