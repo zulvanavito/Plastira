@@ -20,6 +20,7 @@ interface Pickup {
   status: string;
   pointsAwarded: number;
   createdAt: string;
+  rejectionNote?: string;
 }
 
 export default function HistoryPage() {
@@ -58,37 +59,68 @@ export default function HistoryPage() {
           ) : !pickups || pickups.length === 0 ? (
             <p className="text-center text-gray-500">Belum ada data pickup.</p>
           ) : (
-            <Table>
-              <TableHeader>
+            <Table className="border text-center">
+              <TableHeader className="bg-green-50 hover:bg-green-50">
                 <TableRow>
-                  <TableHead className="text-black">Tanggal</TableHead>
-                  <TableHead className="text-black">Jenis</TableHead>
-                  <TableHead className="text-black">Berat (kg)</TableHead>
-                  <TableHead className="text-black">Status</TableHead>
-                  <TableHead className="text-black">Poin</TableHead>
+                  <TableHead className="text-black text-center">
+                    Tanggal
+                  </TableHead>
+                  <TableHead className="text-black text-center">
+                    Jenis
+                  </TableHead>
+                  <TableHead className="text-black text-center">
+                    Berat (kg)
+                  </TableHead>
+                  <TableHead className="text-black text-center">
+                    Status
+                  </TableHead>
+                  <TableHead className="text-black text-center">
+                    Alasan Penolakan
+                  </TableHead>
+                  <TableHead className="text-black text-center">Poin</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {pickups.map((p) => (
                   <TableRow key={p._id}>
-                    <TableCell className="text-black">
+                    <TableCell>
                       {new Date(p.createdAt).toLocaleDateString()}
                     </TableCell>
-                    <TableCell className="text-black">
-                      {p.plasticType}
+                    <TableCell>{p.plasticType}</TableCell>
+                    <TableCell>{p.weightKg}</TableCell>
+                    <TableCell>
+                      <span
+                        className={`text-xs font-medium px-2 py-1 rounded-full ${
+                          p.status === "Verified"
+                            ? "bg-green-100 text-green-700"
+                            : p.status === "Pending"
+                            ? "bg-yellow-100 text-yellow-800"
+                            : "bg-red-100 text-red-700"
+                        }`}
+                      >
+                        {p.status}
+                      </span>
                     </TableCell>
-                    <TableCell className="text-black">{p.weightKg}</TableCell>
-                    <TableCell className="text-black">{p.status}</TableCell>
-                    <TableCell className="text-black">
-                      {p.pointsAwarded}
+
+                    <TableCell>
+                      {p.status === "Rejected" && p.rejectionNote ? (
+                        <div className="text-sm">{p.rejectionNote}</div>
+                      ) : (
+                        <span className="text-gray-400 italic text-sm">—</span>
+                      )}
                     </TableCell>
+
+                    <TableCell>{p.pointsAwarded}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
           )}
           <Link href="/dashboard">
-            <Button variant="ghost" className="w-full mt-10 border bg-slate-50">
+            <Button
+              variant="default"
+              className="w-full mb-5 mt-10 bg-rose-100 text-rose-300 hover:bg-rose-200 hover:text-rose-400 cursor-pointer shadow-sm"
+            >
               ← Kembali ke Dashboard
             </Button>
           </Link>
