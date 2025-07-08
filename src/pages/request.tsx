@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react"; // Tambahkan useEffect
 import axios from "axios";
 import { useRouter } from "next/router";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -21,7 +21,31 @@ export default function RequestPickupPage() {
   const [lat, setLat] = useState("");
   const [lng, setLng] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // --- BARU: State untuk melacak proses pencarian lokasi ---
+  const [isLocating, setIsLocating] = useState(true);
   const router = useRouter();
+
+  // --- BARU: useEffect untuk mengambil lokasi pengguna ---
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setLat(position.coords.latitude.toString());
+          setLng(position.coords.longitude.toString());
+          toast.success("Lokasi berhasil ditemukan!");
+          setIsLocating(false);
+        },
+        () => {
+          toast.error("Gagal mendapatkan lokasi. Mohon isi manual.");
+          setIsLocating(false);
+        }
+      );
+    } else {
+      toast.info("Browser tidak mendukung Geolocation.");
+      setIsLocating(false);
+    }
+  }, []); // Array dependensi kosong agar hanya berjalan sekali saat komponen mount
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -89,6 +113,7 @@ export default function RequestPickupPage() {
                 value={weightKg}
                 onChange={(e) => setWeightKg(e.target.value)}
                 required
+                placeholder="Contoh: 1.5"
               />
             </div>
 
@@ -99,6 +124,9 @@ export default function RequestPickupPage() {
                 value={lat}
                 onChange={(e) => setLat(e.target.value)}
                 required
+                // --- BARU: Feedback saat mencari lokasi ---
+                placeholder={isLocating ? "Mencari..." : "Latitude"}
+                disabled={isLocating}
               />
             </div>
 
@@ -109,6 +137,9 @@ export default function RequestPickupPage() {
                 value={lng}
                 onChange={(e) => setLng(e.target.value)}
                 required
+                // --- BARU: Feedback saat mencari lokasi ---
+                placeholder={isLocating ? "Mencari..." : "Longitude"}
+                disabled={isLocating}
               />
             </div>
 
