@@ -76,9 +76,9 @@ export default function LoginPage() {
             </Button>
             <p className="text-center text-sm">
               Belum Punya Akun?{" "}
-              <a href="/register" className="text-blue-500 underline">
+              <Link href="/register" className="text-blue-500 underline">
                 Daftar
-              </a>{" "}
+              </Link>{" "}
             </p>
             <Link href="/">
               <Button variant="ghost" className="w-full mt-2">

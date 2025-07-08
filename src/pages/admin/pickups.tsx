@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
-import router from "next/router";
-import clsx from "clsx";
 import { Bar, Pie } from "react-chartjs-2";
+import dynamic from "next/dynamic";
+import { handleExportCSV, handleExportExcel } from "@/utils/exportUtils";
+import { handleVerify } from "@/utils/verifyUtils"; // Import dari verifyUtils
+import { handleReject } from "@/utils/rejectUtils"; // Import dari rejectUtils
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -12,8 +14,8 @@ import {
   Tooltip,
   Legend,
   ArcElement,
+  type ScriptableContext,
 } from "chart.js";
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
@@ -33,6 +35,8 @@ import {
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+import clsx from "clsx";
+import router from "next/router";
 
 ChartJS.register(
   CategoryScale,
@@ -43,6 +47,11 @@ ChartJS.register(
   Legend,
   ArcElement
 );
+
+const Map = dynamic(() => import("@/components/ui/map"), {
+  loading: () => <p className="text-center">Memuat peta...</p>,
+  ssr: false,
+});
 
 interface Pickup {
   _id: string;
@@ -100,45 +109,6 @@ export default function AdminPickupPage() {
     fetchData();
   }, [fetchData]);
 
-  /* --------------------------- Action Handlers --------------------------- */
-  const handleVerify = async (id: string) => {
-    try {
-      const token = localStorage.getItem("token");
-      await axios.put(
-        "/api/pickups/verify",
-        { id },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      toast.success("Pickup berhasil diverifikasi");
-      fetchData();
-    } catch {
-      toast.error("Gagal verifikasi pickup");
-    }
-  };
-
-  const handleReject = async () => {
-    if (!selectedPickup) return;
-    try {
-      const token = localStorage.getItem("token");
-      await axios.patch(
-        "/api/pickups/verify",
-        { id: selectedPickup._id, note: rejectReason },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      toast.success("Pickup ditolak");
-      setShowReject(false);
-      setRejectReason("");
-      fetchData();
-    } catch {
-      toast.error("Gagal menolak pickup");
-    }
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    router.push("/login");
-  };
-
   /* --------------------------- Render --------------------------- */
   const statCard = (title: string, value: number, color: string) => (
     <Card className="border-l-4" style={{ borderColor: color }}>
@@ -152,28 +122,39 @@ export default function AdminPickupPage() {
   );
 
   const chartData = {
-    labels: ["Total", "Verified", "Pending", "Rejected", "Total Points"],
+    labels: ["Verified", "Pending", "Rejected"],
     datasets: [
       {
-        label: "Statistik Pickup",
-        data: [
-          stats.total,
-          stats.verified,
-          stats.pending,
-          stats.rejected,
-          stats.pointsTotal,
-        ],
-        backgroundColor: [
-          "#3B82F6",
-          "#16A34A",
-          "#EAB308",
-          "#DC2626",
-          "#7C3AED",
-        ],
-        borderColor: ["#3B82F6", "#16A34A", "#EAB308", "#DC2626", "#7C3AED"],
+        label: "Total Berdasarkan Status",
+        data: [stats.verified, stats.pending, stats.rejected],
+        backgroundColor: ["#4ade80", "#facc15", "#f87171"],
+        borderColor: ["#4ade80", "#facc15", "#f87171"],
         borderWidth: 1,
       },
     ],
+  };
+
+  const barChartOptions = {
+    responsive: true,
+    plugins: {
+      legend: {
+        display: false,
+      },
+    },
+    animation: {
+      delay: (context: ScriptableContext<"bar">) => {
+        let delay = 0;
+        if (context.type === "data" && context.mode === "default") {
+          delay = context.dataIndex * 300 + context.datasetIndex * 100;
+        }
+        return delay;
+      },
+    },
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    router.push("/login");
   };
 
   return (
@@ -191,24 +172,41 @@ export default function AdminPickupPage() {
 
       {/* Statistic Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 w-full max-w-6xl">
-        {statCard("Total Pickup", stats.total, "#3B82F6")}
-        {statCard("Verified", stats.verified, "#16A34A")}
-        {statCard("Pending", stats.pending, "#EAB308")}
-        {statCard("Rejected", stats.rejected, "#DC2626")}
-        {statCard("Total Poin", stats.pointsTotal, "#7C3AED")}
+        {statCard("Total Pickup", stats.total, "#38bdf8")}
+        {statCard("Verified", stats.verified, "#4ade80")}
+        {statCard("Pending", stats.pending, "#facc15")}
+        {statCard("Rejected", stats.rejected, "#f87171")}
+        {statCard("Total Poin", stats.pointsTotal, "#818cf8")}
       </div>
 
-      <div className="w-full max-w-6xl my-10">
-        <h3 className="text-xl text-center font-bold mb-4">Statistik Pickup</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          <div>
-            <Bar data={chartData} />
+      <Card className="w-full max-w-6xl my-10 shadow-lg">
+        <CardHeader>
+          <CardTitle className="text-2xl text-center font-semibold">
+            Statistik Pickup - Status
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div>
+              <h3 className="text-xl text-center font-medium mb-4">
+                Bar Chart
+              </h3>
+              <Bar data={chartData} options={barChartOptions} />
+            </div>
+            <div>
+              <h3 className="text-xl text-center font-medium mb-4">
+                Pie Chart
+              </h3>
+              <div className="relative mx-auto h-64 w-64">
+                <Pie
+                  data={chartData}
+                  options={{ responsive: true, maintainAspectRatio: false }}
+                />
+              </div>
+            </div>
           </div>
-          <div>
-            <Pie data={chartData} />
-          </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
 
       {/* Data Table */}
       <Card className="w-full max-w-6xl shadow-sm">
@@ -284,10 +282,11 @@ export default function AdminPickupPage() {
                           <>
                             <Button
                               size="sm"
-                              onClick={() => handleVerify(p._id)}
+                              onClick={() => handleVerify(p._id, fetchData)}
                             >
-                              ✅
+                              ✅ Verifikasi
                             </Button>
+
                             <Button
                               size="sm"
                               variant="destructive"
@@ -307,8 +306,23 @@ export default function AdminPickupPage() {
               </TableBody>
             </Table>
           )}
+
           {/* Logout */}
-          <div className="flex justify-center">
+          <div className="flex justify-center gap-4">
+            <Button
+              variant="outline"
+              onClick={() => handleExportCSV(pickups)}
+              className="mt-8 rounded-full bg-lime-100 text-lime-500 hover:bg-lime-200 hover:text-lime-700 px-6"
+            >
+              Export CSV
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => handleExportExcel(pickups)}
+              className="mt-8 rounded-full bg-orange-100 text-orange-500 hover:bg-orange-200 hover:text-orange-700 px-6"
+            >
+              Export Excel
+            </Button>
             <Button
               onClick={handleLogout}
               className="mt-8 rounded-full bg-rose-100 text-rose-500 hover:bg-rose-200 hover:text-rose-700 px-6"
@@ -359,6 +373,13 @@ export default function AdminPickupPage() {
                   {selectedPickup.rejectionNote}
                 </p>
               )}
+              <div className="mt-4 w-full h-72">
+                {/* --- BARU: Gunakan komponen Map yang dinamis --- */}
+                <Map
+                  lat={selectedPickup.location.lat}
+                  lng={selectedPickup.location.lng}
+                />
+              </div>
             </div>
           </DialogContent>
         </Dialog>
@@ -381,8 +402,20 @@ export default function AdminPickupPage() {
               onChange={(e) => setRejectReason(e.target.value)}
             />
 
-            <Button className="mt-4" onClick={handleReject}>
-              Kirim Penolakan
+            <Button
+              size="sm"
+              variant="destructive"
+              onClick={() =>
+                handleReject(
+                  selectedPickup,
+                  rejectReason,
+                  fetchData,
+                  setShowReject,
+                  setRejectReason
+                )
+              }
+            >
+              ❌ Tolak
             </Button>
           </DialogContent>
         </Dialog>

@@ -76,9 +76,9 @@ export default function RegisterPage() {
             </Button>
             <p className="text-center text-sm">
               Sudah Punya Akun?{" "}
-              <a href="/login" className="text-blue-500 underline">
+              <Link href="/login" className="text-blue-500 underline">
                 Masuk
-              </a>{" "}
+              </Link>{" "}
             </p>
             <Link href="/">
               <Button variant="ghost" className="w-full mt-2">
