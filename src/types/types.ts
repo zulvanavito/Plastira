@@ -9,3 +9,11 @@ export interface Pickup {
   userId: { _id: string; name: string; email: string };
   rejectionNote?: string;
 }
+
+export interface Stats {
+  total: number;
+  verified: number;
+  rejected: number;
+  pending: number;
+  pointsTotal: number;
+}
