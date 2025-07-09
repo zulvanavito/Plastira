@@ -1,40 +1,90 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+# Komodo Smart Water 💧
 
-## Getting Started
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/1234567/ (GANTI DENGAN URL LOGO PROYEK LO)" alt="Komodo Smart Water Logo" width="150"/>
+</p>
 
-First, run the development server:
+<p align="center">
+  <strong>Ubah Sampah Plastik Menjadi Kebaikan.</strong><br/>
+  Platform digital yang menghubungkan masyarakat dengan sistem pengelolaan sampah, mengubah sampah plastik menjadi poin berharga, dan mendukung ekonomi sirkular.
+</p>
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+<p align="center">
+  <img src="https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white" alt="Next.js">
+  <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React">
+  <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript">
+  <img src="https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white" alt="MongoDB">
+  <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS">
+</p>
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+## 🚀 Tentang Proyek
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+**Komodo Smart Water** adalah sebuah aplikasi web MVP (*Minimum Viable Product*) yang dirancang untuk menjawab tantangan pengelolaan sampah di masyarakat, khususnya sampah plastik. Aplikasi ini memfasilitasi proses penjemputan sampah dari pengguna, memberikan penghargaan berupa poin (*loyalty program*), dan menyediakan data analitik bagi admin untuk memonitor aktivitas.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
+[cite_start]Proyek ini dibangun sebagai submisi untuk **IDCamp 2024 Developer Challenge #2 x SheHacks**, dengan mengambil *use case* dari startup **Komodo Water**[cite: 53, 58, 62].
 
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## ✨ Fitur Utama
 
-## Learn More
+Aplikasi ini memiliki dua peran utama: **User** dan **Admin**.
 
-To learn more about Next.js, take a look at the following resources:
+### Untuk User:
+- **🔐 Autentikasi**: Sistem registrasi dan login yang aman.
+- **📊 Dashboard Interaktif**: Menampilkan total poin, ringkasan aktivitas, serta grafik tren pickup bulanan.
+- **📍 Request Pickup**: Form permintaan penjemputan dengan deteksi lokasi otomatis menggunakan Geolocation API.
+- **📜 Riwayat Transaksi**: Halaman riwayat dengan fitur filter berdasarkan status, paginasi, dan modal detail untuk setiap transaksi.
+- **🗺️ Notifikasi Real-time (Konsep)**: Konsep untuk notifikasi status pickup secara langsung (menggunakan WebSockets).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
+### Untuk Admin:
+- **📈 Dashboard Analitik**: Menampilkan statistik kunci (total pickup, status, total poin) dan visualisasi data melalui Bar Chart & Pie Chart.
+- **🗺️ Peta Sebaran (GIS)**: Peta interaktif yang menampilkan semua lokasi pickup dari user, dengan marker yang bisa di-filter.
+- **✅ Verifikasi & Manajemen**: Admin dapat melakukan verifikasi, menolak (dengan alasan), dan melihat detail setiap request pickup.
+- **📑 Export Data**: Fitur untuk mengekspor data pickup ke format CSV dan Excel.
+- **📇 Tampilan Kartu**: Daftar pickup disajikan dalam bentuk kartu yang modern dan responsif, lengkap dengan paginasi.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🛠️ Dibangun Dengan (Tech Stack)
 
-## Deploy on Vercel
+- **Frontend**: Next.js (React), TypeScript, Tailwind CSS
+- **Backend**: Next.js API Routes, TypeScript
+- **Database**: MongoDB dengan Mongoose
+- **Visualisasi Data**: Chart.js, React-ChartJS-2
+- **Peta**: Leaflet, React-Leaflet
+- **Styling & Komponen**: shadcn/ui, lucide-react
+- **Notifikasi**: Sonner
+- **Animasi & Transisi**: Framer Motion
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🏁 Memulai (Getting Started)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+Untuk menjalankan proyek ini secara lokal, ikuti langkah-langkah berikut.
+
+### Prasyarat
+
+Pastikan lo punya Node.js dan npm (atau yarn/pnpm) yang terinstal di mesin lo.
+
+### Instalasi
+
+1.  **Clone repository ini:**
+    ```bash
+    git clone [https://github.com/username/nama-repo.git](https://github.com/username/nama-repo.git)
+    cd nama-repo
+    ```
+2.  **Install semua dependencies:**
+    ```bash
+    npm install
+    ```
+3.  **Setup Environment Variables:**
+    Buat file baru bernama `.env.local` di root proyek dan isi dengan variabel berikut.
+    ```env
+    MONGODB_URI="mongodb+srv://user:pass@cluster.mongodb.net/nama_database"
+    JWT_SECRET="iniadalahkuncirahasiajwtlo"
+    ```
+4.  **Jalankan server development:**
+    ```bash
+    npm run dev
+    ```
+5.  Buka [http://localhost:3000](http://localhost:3000) di browser lo.
+
+---
+
+Saran gue, ganti bagian URL logo dan URL repo Git-nya ya. *README* ini udah cukup lengkap buat ngasih gambaran proyek lo secara keseluruhan. Mantap!
