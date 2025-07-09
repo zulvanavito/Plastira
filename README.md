@@ -1,7 +1,7 @@
 # Komodo Smart Water 💧
 
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/1234567/ (GANTI DENGAN URL LOGO PROYEK LO)" alt="Komodo Smart Water Logo" width="150"/>
+  <img src="/public/img/Logo Plastira.png" alt="Plastira Logo" width="150"/>
 </p>
 
 <p align="center">
@@ -21,7 +21,7 @@
 
 ## 🚀 Tentang Proyek
 
-**Komodo Smart Water** adalah sebuah aplikasi web MVP (*Minimum Viable Product*) yang dirancang untuk menjawab tantangan pengelolaan sampah di masyarakat, khususnya sampah plastik. Aplikasi ini memfasilitasi proses penjemputan sampah dari pengguna, memberikan penghargaan berupa poin (*loyalty program*), dan menyediakan data analitik bagi admin untuk memonitor aktivitas.
+**Plastira** adalah sebuah aplikasi web MVP (*Minimum Viable Product*) yang dirancang untuk menjawab tantangan pengelolaan sampah di masyarakat, khususnya sampah plastik. Aplikasi ini memfasilitasi proses penjemputan sampah dari pengguna, memberikan penghargaan berupa poin (*loyalty program*), dan menyediakan data analitik bagi admin untuk memonitor aktivitas.
 
 [cite_start]Proyek ini dibangun sebagai submisi untuk **IDCamp 2024 Developer Challenge #2 x SheHacks**, dengan mengambil *use case* dari startup **Komodo Water**[cite: 53, 58, 62].
 
@@ -60,7 +60,7 @@ Untuk menjalankan proyek ini secara lokal, ikuti langkah-langkah berikut.
 
 ### Prasyarat
 
-Pastikan lo punya Node.js dan npm (atau yarn/pnpm) yang terinstal di mesin lo.
+Pastikan punya Node.js dan npm (atau yarn/pnpm) yang terinstal di devices mu.
 
 ### Instalasi
 
@@ -77,14 +77,10 @@ Pastikan lo punya Node.js dan npm (atau yarn/pnpm) yang terinstal di mesin lo.
     Buat file baru bernama `.env.local` di root proyek dan isi dengan variabel berikut.
     ```env
     MONGODB_URI="mongodb+srv://user:pass@cluster.mongodb.net/nama_database"
-    JWT_SECRET="iniadalahkuncirahasiajwtlo"
+    JWT_SECRET="iniadalahkuncirahasiajwt"
     ```
 4.  **Jalankan server development:**
     ```bash
     npm run dev
     ```
-5.  Buka [http://localhost:3000](http://localhost:3000) di browser lo.
-
----
-
-Saran gue, ganti bagian URL logo dan URL repo Git-nya ya. *README* ini udah cukup lengkap buat ngasih gambaran proyek lo secara keseluruhan. Mantap!
+5.  Buka [http://localhost:3000](http://localhost:3000) di browser.
