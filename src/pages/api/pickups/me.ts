@@ -15,9 +15,11 @@ export default async function handler(
     const user = verifyToken(req); // token harus ada id
     if (!user?.id) return res.status(401).json({ msg: "Unauthorized" });
 
-    const pickups = await Pickup.find({ userId: user.id }).sort({
-      createdAt: -1,
-    });
+    const pickups = await Pickup.find({ userId: user.id })
+      .sort({
+        createdAt: -1,
+      })
+      .populate("userId", "name email");
 
     res.status(200).json({ pickups });
   } catch (err: unknown) {

@@ -99,7 +99,11 @@ export default function RequestPickupPage() {
             </p>
           </div>
           <Link href="/dashboard">
-            <Button variant="outline" size="sm" className="bg-white cursor-pointer text-black">
+            <Button
+              variant="outline"
+              size="sm"
+              className="cursor-pointer hover:bg-[#00A7ED] hover:text-white shadow-sm"
+            >
               <ArrowLeft className="mr-2 size-4" />
               Kembali ke Dashboard
             </Button>
@@ -125,13 +129,28 @@ export default function RequestPickupPage() {
                   </Label>
                   <Select onValueChange={setPlasticType} value={plasticType}>
                     <SelectTrigger id="plastic-type">
-                      <SelectValue placeholder="Pilih jenis plastik"/>
+                      <SelectValue placeholder="Pilih jenis plastik" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="PET">PET</SelectItem>
-                      <SelectItem value="HDPE">HDPE</SelectItem>
-                      <SelectItem value="PP">PP</SelectItem>
-                      <SelectItem value="Other">Lainnya</SelectItem>
+                      <SelectItem value="PET (Polyethylene Terephthalate)">
+                        PET (Polyethylene Terephthalate)
+                      </SelectItem>
+                      <SelectItem value="HDPE (High-Density Polyethylene)">
+                        HDPE (High-Density Polyethylene)
+                      </SelectItem>
+                      <SelectItem value="PVC (Polyvinyl Chloride)">
+                        PVC (Polyvinyl Chloride)
+                      </SelectItem>
+                      <SelectItem value="LDPE (Low-Density Polyethylene)">
+                        LDPE (Low-Density Polyethylene)
+                      </SelectItem>
+                      <SelectItem value="PP (Polypropylene)">
+                        PP (Polypropylene)
+                      </SelectItem>
+                      <SelectItem value="PS (Polystyrene)">
+                        PS (Polystyrene)
+                      </SelectItem>
+                      <SelectItem value="Lainnya">Lainnya</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
