@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
-import { Bar, Pie } from "react-chartjs-2";
 import { toast } from "sonner";
 import router from "next/router";
+import dynamic from "next/dynamic";
+import { Bar, Pie } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -14,10 +15,11 @@ import {
   ArcElement,
 } from "chart.js";
 
+// Komponen & Utilitas
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { DetailModal } from "@/components/ui/DetailModal";
 import { RejectModal } from "@/components/ui/RejectModal";
+import { DetailModal } from "@/components/ui/DetailModal";
 import { HistoryCard } from "@/components/ui/HistoryCard";
 import { FilterControls } from "@/components/ui/FilterControls";
 import { PaginationControls } from "@/components/ui/PaginationControls";
@@ -26,12 +28,12 @@ import { handleVerify } from "@/utils/verifyUtils";
 import { handleReject } from "@/utils/rejectUtils";
 import {
   filterPickups,
-  ITEMS_PER_PAGE_ADMIN,
   Pickup,
 } from "@/utils/historyUtils";
 import { LogOut, Download } from "lucide-react";
 import { Stats } from "@/types/types";
 
+// Registrasi Chart
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -41,6 +43,20 @@ ChartJS.register(
   Legend,
   ArcElement
 );
+
+// --- PERUBAHAN DI SINI: Dynamic import untuk SEMUA komponen peta ---
+const AllPickupsMap = dynamic(
+  () =>
+    import("@/components/ui/AllPickupsMap").then((mod) => mod.AllPickupsMap),
+  {
+    loading: () => (
+      <div className="h-full w-full animate-pulse rounded-lg bg-slate-200"></div>
+    ),
+    ssr: false,
+  }
+);
+
+const ITEMS_PER_PAGE = 6;
 
 export default function AdminPickupPage() {
   const [pickups, setPickups] = useState<Pickup[]>([]);
@@ -85,10 +101,10 @@ export default function AdminPickupPage() {
 
   const filtered = filterPickups(pickups, filterStatus);
   const paginatedPickups = filtered.slice(
-    (currentPage - 1) * ITEMS_PER_PAGE_ADMIN,
-    currentPage * ITEMS_PER_PAGE_ADMIN
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
   );
-  const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE_ADMIN);
+  const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -137,9 +153,9 @@ export default function AdminPickupPage() {
             onClick={handleLogout}
             variant="outline"
             size="sm"
-            className="cursor-pointer hover:bg-[#00A7ED] hover:text-white shadow-sm"
+            className="bg-white"
           >
-            <LogOut className="mr-2 size-" />
+            <LogOut className="mr-2 size-4" />
             Logout
           </Button>
         </header>
@@ -188,7 +204,6 @@ export default function AdminPickupPage() {
                 onFilterChange={handleFilterChange}
               />
               <Button
-                className="cursor-pointer hover:bg-[#00A7ED] hover:text-white shadow-sm"
                 variant="outline"
                 onClick={() => handleExportExcel(pickups)}
               >
@@ -196,7 +211,6 @@ export default function AdminPickupPage() {
                 Excel
               </Button>
               <Button
-                className="cursor-pointer hover:bg-[#00A7ED] hover:text-white shadow-sm"
                 variant="outline"
                 onClick={() => handleExportCSV(pickups)}
               >
@@ -205,7 +219,6 @@ export default function AdminPickupPage() {
               </Button>
             </div>
           </div>
-
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {loading ? (
               <p className="col-span-full text-center py-10">Loading...</p>
@@ -231,12 +244,22 @@ export default function AdminPickupPage() {
               ))
             )}
           </div>
-
           <PaginationControls
             currentPage={currentPage}
             totalPages={totalPages}
             onPageChange={setCurrentPage}
           />
+        </Card>
+
+        <Card className="mt-8 rounded-2xl shadow-sm">
+          <CardHeader>
+            <CardTitle>Peta Sebaran Lokasi Pickup</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="h-[500px] w-full rounded-lg">
+              <AllPickupsMap pickups={filtered} />
+            </div>
+          </CardContent>
         </Card>
 
         <DetailModal
@@ -248,8 +271,6 @@ export default function AdminPickupPage() {
           }}
           isAdmin={true}
         />
-
-        {/* --- BARU: Panggil komponen RejectModal di sini --- */}
         <RejectModal
           isOpen={showReject}
           onClose={() => setShowReject(false)}
