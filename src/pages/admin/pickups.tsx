@@ -26,14 +26,11 @@ import { PaginationControls } from "@/components/ui/PaginationControls";
 import { handleExportCSV, handleExportExcel } from "@/utils/exportUtils";
 import { handleVerify } from "@/utils/verifyUtils";
 import { handleReject } from "@/utils/rejectUtils";
-import {
-  filterPickups,
-  Pickup,
-} from "@/utils/historyUtils";
+import { filterPickups, Pickup } from "@/utils/historyUtils";
 import { LogOut, Download } from "lucide-react";
 import { Stats } from "@/types/types";
+import io from "socket.io-client";
 
-// Registrasi Chart
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -44,7 +41,6 @@ ChartJS.register(
   ArcElement
 );
 
-// --- PERUBAHAN DI SINI: Dynamic import untuk SEMUA komponen peta ---
 const AllPickupsMap = dynamic(
   () =>
     import("@/components/ui/AllPickupsMap").then((mod) => mod.AllPickupsMap),
@@ -136,6 +132,30 @@ export default function AdminPickupPage() {
     maintainAspectRatio: false,
     plugins: { legend: { position: "top" as const } },
   };
+
+  useEffect(() => {
+    // Inisialisasi koneksi socket
+    const socket = io({
+      path: "/api/socket",
+    });
+
+    socket.on("connect", () => {
+      console.log("Admin connected to socket server.");
+    });
+
+    // Dengerin event notifikasi pickup baru
+    socket.on("new-pickup-request", (data) => {
+      console.log("New pickup request received:", data);
+      toast.info(data.message);
+      // Ambil data terbaru biar list-nya update
+      fetchData();
+    });
+
+    // Cleanup pas komponen di-unmount
+    return () => {
+      socket.disconnect();
+    };
+  }, [fetchData]); // tambahin fetchData sebagai dependency
 
   return (
     <div className="min-h-screen w-full bg-slate-50 dark:bg-slate-900">
@@ -307,6 +327,7 @@ const StatCard = ({
     red: "border-red-500",
     indigo: "border-indigo-500",
   };
+
   return (
     <Card className={`rounded-2xl shadow-sm border-l-4 ${colorClasses[color]}`}>
       <CardContent className="p-4">
