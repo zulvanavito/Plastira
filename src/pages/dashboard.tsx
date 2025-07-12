@@ -33,11 +33,14 @@ import { lineChartOptions, pieChartOptions } from "@/utils/chartConfig";
 import io from "socket.io-client";
 import { jwtDecode } from "jwt-decode";
 import { nanoid } from "nanoid";
-import {
-  NotificationBell,
-  AppNotification,
-} from "@/components/ui/Custom/NotificationBell";
+
+// UI Components
+import { NotificationBell, AppNotification } from "@/components/ui/Custom/NotificationBell";
 import { RecentPickupCard } from "@/components/ui/Custom/RecentPickupCard";
+import { DetailModal } from "@/components/ui/Custom/DetailModal";
+
+// Types
+import { Pickup as FullPickupType } from "@/utils/historyUtils"; // <-- Ganti nama ini biar jelas ini tipe data LENGKAP
 
 ChartJS.register(
   CategoryScale,
@@ -55,19 +58,20 @@ interface User {
   name: string;
   points: number;
 }
-interface Pickup {
-  _id: string;
-  plasticType: string;
-  status: "Pending" | "Verified" | "Rejected";
-  createdAt: string;
-}
+
+// HAPUS interface PickupType yang ada di sini untuk menghindari konflik
 
 export default function Dashboard() {
   const [user, setUser] = useState<User | null>(null);
-  const [pickups, setPickups] = useState<Pickup[]>([]);
+  // GUNAKAN TIPE DATA YANG LENGKAP DARI historyUtils
+  const [pickups, setPickups] = useState<FullPickupType[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const [notifications, setNotifications] = useState<AppNotification[]>([]);
+  // GUNAKAN TIPE DATA YANG LENGKAP JUGA UNTUK MODAL
+  const [selectedPickup, setSelectedPickup] = useState<FullPickupType | null>(
+    null
+  );
 
   useEffect(() => {
     const fetchData = async () => {
@@ -77,19 +81,21 @@ export default function Dashboard() {
         return;
       }
       try {
-        const userPromise = axios.get<{ user: User }>("/api/user/me", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const pickupsPromise = axios.get<{ pickups: Pickup[] }>(
-          "/api/pickups/me",
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
         const [userResponse, pickupsResponse] = await Promise.all([
-          userPromise,
-          pickupsPromise,
+          axios.get<{ user: User }>("/api/user/me", {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+          // Pastikan API mengembalikan data sesuai FullPickupType
+          axios.get<{ pickups: FullPickupType[] }>("/api/pickups/me", {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
         ]);
         setUser(userResponse.data.user);
-        setPickups(pickupsResponse.data.pickups);
+        const sortedPickups = pickupsResponse.data.pickups.sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+        setPickups(sortedPickups);
       } catch {
         toast.error("Sesi berakhir, silakan login kembali.");
         localStorage.removeItem("token");
@@ -111,10 +117,8 @@ export default function Dashboard() {
 
     socket.on("connect", () => {
       console.log("User connected to socket server.");
-
       try {
         const decoded: { id: string } = jwtDecode(token);
-
         socket.emit("join-room", decoded.id);
       } catch (error) {
         console.error("Invalid token:", error);
@@ -172,7 +176,7 @@ export default function Dashboard() {
     const data: number[] = [];
     const monthlyPickups: Record<string, number> = {};
     const sixMonthsAgo = new Date();
-    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 5); // Data 6 bulan terakhir
+    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 5);
 
     for (let i = 5; i >= 0; i--) {
       const d = new Date();
@@ -201,7 +205,6 @@ export default function Dashboard() {
   };
 
   const recentPickups = pickups.slice(0, 3);
-
   const { labels: lineChartLabels, data: lineChartDataPoints } =
     processChartData();
 
@@ -272,6 +275,37 @@ export default function Dashboard() {
           <StatCard title="Total Poin" value={user.points} icon={<Star />} />
         </div>
 
+        <div className="mt-6">
+          <Card className="rounded-2xl bg-white p-6 shadow-sm dark:bg-slate-800">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-200">
+                Aktivitas Terbaru
+              </h3>
+              <Link href="/history">
+                <Button variant="ghost" size="sm" className="text-[#23A4DA] cursor-pointer">
+                  Lihat Semua
+                  <ChevronRight className="ml-1 size-4" />
+                </Button>
+              </Link>
+            </div>
+            <div className="space-y-3">
+              {recentPickups.length > 0 ? (
+                recentPickups.map((pickup) => (
+                  <RecentPickupCard
+                    key={pickup._id}
+                    pickup={pickup}
+                    onClick={() => setSelectedPickup(pickup)}
+                  />
+                ))
+              ) : (
+                <p className="text-center text-sm text-slate-500 py-4">
+                  Kamu belum punya request pickup.
+                </p>
+              )}
+            </div>
+          </Card>
+        </div>
+
         <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-5">
           <div className="lg:col-span-3">
             <Card className="rounded-2xl bg-white p-6 shadow-sm dark:bg-slate-800 h-full">
@@ -296,33 +330,6 @@ export default function Dashboard() {
               </div>
             </Card>
           </div>
-        </div>
-
-        <div className="mt-6">
-          <Card className="rounded-2xl bg-white p-6 shadow-sm dark:bg-slate-800">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-200">
-                Aktivitas Terbaru
-              </h3>
-              <Link href="/history">
-                <Button variant="ghost" size="sm" className="text-[#23A4DA]">
-                  Lihat Semua
-                  <ChevronRight className="ml-1 size-4" />
-                </Button>
-              </Link>
-            </div>
-            <div className="space-y-3">
-              {recentPickups.length > 0 ? (
-                recentPickups.map((pickup) => (
-                  <RecentPickupCard key={pickup._id} pickup={pickup} />
-                ))
-              ) : (
-                <p className="text-center text-sm text-slate-500 py-4">
-                  Kamu belum punya request pickup.
-                </p>
-              )}
-            </div>
-          </Card>
         </div>
 
         <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-3">
@@ -365,6 +372,11 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
+      <DetailModal
+        pickup={selectedPickup}
+        isOpen={!!selectedPickup}
+        onClose={() => setSelectedPickup(null)}
+      />
     </div>
   );
 }
@@ -379,12 +391,11 @@ const StatCard = ({
   icon: React.ReactNode;
 }) => (
   <Card className="rounded-2xl bg-gradient-to-br from-[#23A4DA] to-[#0A4E6A] p-6 text-white shadow-lg">
-    {" "}
     <div className="flex items-start justify-between">
       <p className="text-lg font-semibold">{title}</p>
       {icon}
-    </div>{" "}
-    <p className="mt-2 text-5xl font-bold">{value}</p>{" "}
+    </div>
+    <p className="mt-2 text-5xl font-bold">{value}</p>
   </Card>
 );
 const ActionCard = ({
@@ -401,15 +412,11 @@ const ActionCard = ({
   primary?: boolean;
 }) => (
   <Link href={href} className="flex">
-    {" "}
     <Card
       className={`group w-full rounded-2xl bg-white shadow-sm transition-all duration-300 hover:scale-[1.02] hover:shadow-xl dark:bg-slate-800`}
     >
-      {" "}
       <CardContent className="flex h-full flex-col justify-between p-6">
-        {" "}
         <div>
-          {" "}
           <div
             className={`mb-4 w-fit rounded-lg p-3 ${
               primary
@@ -418,21 +425,20 @@ const ActionCard = ({
             }`}
           >
             {icon}
-          </div>{" "}
+          </div>
           <h3 className="text-xl font-bold text-slate-800 dark:text-white">
             {title}
-          </h3>{" "}
+          </h3>
           <p className="mt-1 text-slate-500 dark:text-slate-400">
             {description}
-          </p>{" "}
-        </div>{" "}
+          </p>
+        </div>
         <div className="mt-4 flex items-center text-sm font-semibold text-[#23A4DA]">
-          {" "}
-          <span>Lanjutkan</span>{" "}
-          <ChevronRight className="ml-1 size-4 transition-transform duration-300 group-hover:translate-x-1" />{" "}
-        </div>{" "}
-      </CardContent>{" "}
-    </Card>{" "}
+          <span>Lanjutkan</span>
+          <ChevronRight className="ml-1 size-4 transition-transform duration-300 group-hover:translate-x-1" />
+        </div>
+      </CardContent>
+    </Card>
   </Link>
 );
 const MiniStat = ({
@@ -445,13 +451,12 @@ const MiniStat = ({
   icon: React.ReactNode;
 }) => (
   <div className="rounded-lg bg-slate-100 p-4 dark:bg-slate-700">
-    {" "}
     <div className="flex items-center text-slate-500 dark:text-slate-400">
       {icon}
       <span className="ml-2 text-sm font-medium">{title}</span>
-    </div>{" "}
+    </div>
     <p className="mt-1 text-2xl font-bold text-slate-800 dark:text-white">
       {value}
-    </p>{" "}
+    </p>
   </div>
 );

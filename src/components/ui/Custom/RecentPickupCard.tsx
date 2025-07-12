@@ -1,7 +1,8 @@
 import { Card, CardContent } from "@/components/ui/ShadCN/card";
 import { cn } from "@/lib/utils";
-import { CheckCircle, XCircle, Loader, Trash2 } from "lucide-react";
+import { CheckCircle, Loader, Trash2, XCircle } from "lucide-react";
 
+// Pastikan tipe ini sesuai dengan data yang kamu punya
 interface Pickup {
   _id: string;
   plasticType: string;
@@ -11,6 +12,7 @@ interface Pickup {
 
 interface RecentPickupCardProps {
   pickup: Pickup;
+  onClick: () => void; // Prop untuk handle klik
 }
 
 const statusInfo = {
@@ -31,13 +33,15 @@ const statusInfo = {
   },
 };
 
-export const RecentPickupCard = ({ pickup }: RecentPickupCardProps) => {
+export const RecentPickupCard = ({ pickup, onClick }: RecentPickupCardProps) => {
   const { icon, text, bg } = statusInfo[pickup.status];
 
   return (
     <Card
+      onClick={onClick}
       className={cn(
-        "p-4 transition-all hover:bg-slate-100 dark:hover:bg-slate-700/50",
+        "p-4 transition-all hover:shadow-md cursor-pointer",
+        "hover:bg-slate-100 dark:hover:bg-slate-700/50",
         bg
       )}
     >
