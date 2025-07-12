@@ -1,10 +1,15 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+} from "@/components/ui/ShadCN/card";
+import { Label } from "@/components/ui/ShadCN/label";
+import { Input } from "@/components/ui/ShadCN/input";
+import { Button } from "@/components/ui/ShadCN/button";
 import { toast } from "sonner";
 import Link from "next/link";
 import { LogIn } from "lucide-react";

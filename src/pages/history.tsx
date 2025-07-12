@@ -2,13 +2,13 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "sonner";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/ShadCN/button";
 import { ArrowLeft, Download } from "lucide-react";
-import { FilterControls } from "@/components/ui/FilterControls";
-import { PaginationControls } from "@/components/ui/PaginationControls";
-import { HistoryCard } from "@/components/ui/HistoryCard";
-import { DetailModal } from "@/components/ui/DetailModal";
-import { EmptyState } from "@/components/ui/EmptyState";
+import { FilterControls } from "@/components/ui/Custom/FilterControls";
+import { PaginationControls } from "@/components/ui/Custom/PaginationControls";
+import { HistoryCard } from "@/components/ui/Custom/HistoryCard";
+import { DetailModal } from "@/components/ui/Custom/DetailModal";
+import { EmptyState } from "@/components/ui/Custom/EmptyState";
 import {
   filterPickups,
   ITEMS_PER_PAGE_HISTORY,
@@ -57,7 +57,7 @@ export default function HistoryPage() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-slate-50 dark:bg-slate-900">
+    <div className="flex items-center justify-center min-h-screen w-full bg-slate-50 dark:bg-slate-900">
       <div className="container mx-auto max-w-4xl px-4 py-8">
         <header className="mb-8 flex items-center justify-between">
           <div>

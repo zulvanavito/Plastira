@@ -1,6 +1,11 @@
 import { useRouter } from "next/router";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/ShadCN/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/ShadCN/card";
 import { CheckCircle2, Home, Send } from "lucide-react";
 
 export default function RequestSuccessPage() {

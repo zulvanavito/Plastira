@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/ShadCN/button";
 import clsx from "clsx";
 
 interface FilterControlsProps {

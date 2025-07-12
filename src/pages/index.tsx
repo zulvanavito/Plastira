@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/ShadCN/button";
 import { LogIn, UserPlus } from "lucide-react";
 import Image from "next/image";
 
@@ -45,7 +45,11 @@ export default function Home() {
               </Button>
             </Link>
             <Link href="/register" className="w-full sm:w-auto">
-              <Button size="lg" variant="secondary" className="w-full cursor-pointer">
+              <Button
+                size="lg"
+                variant="secondary"
+                className="w-full cursor-pointer"
+              >
                 <UserPlus className="mr-2 size-5" />
                 Daftar Akun
               </Button>
