@@ -1,4 +1,4 @@
-# Komodo Smart Water 💧
+# Plastira - Jadilah Pahlawan Lingkungan!
 
 <p align="center">
   <img src="/public/img/Logo Plastira.png" alt="Plastira Logo" width="150"/>
@@ -23,7 +23,7 @@
 
 **Plastira** adalah sebuah aplikasi web MVP (*Minimum Viable Product*) yang dirancang untuk menjawab tantangan pengelolaan sampah di masyarakat, khususnya sampah plastik. Aplikasi ini memfasilitasi proses penjemputan sampah dari pengguna, memberikan penghargaan berupa poin (*loyalty program*), dan menyediakan data analitik bagi admin untuk memonitor aktivitas.
 
-[cite_start]Proyek ini dibangun sebagai submisi untuk **IDCamp 2024 Developer Challenge #2 x SheHacks**, dengan mengambil *use case* dari startup **Komodo Water**[cite: 53, 58, 62].
+Proyek ini dibangun sebagai submisi untuk **IDCamp 2024 Developer Challenge #2 x SheHacks**, dengan mengambil *use case* dari startup **Komodo Water**[cite: 53, 58, 62].
 
 ## ✨ Fitur Utama
 
