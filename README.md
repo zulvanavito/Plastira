@@ -1,4 +1,4 @@
-# Komodo Smart Water 💧
+# Plastira - Jadilah Pahlawan Lingkungan!
 
 <p align="center">
   <img src="/public/img/Logo Plastira.png" alt="Plastira Logo" width="150"/>
