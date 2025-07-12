@@ -32,6 +32,11 @@ import {
 import { lineChartOptions, pieChartOptions } from "@/utils/chartConfig";
 import io from "socket.io-client";
 import { jwtDecode } from "jwt-decode";
+import { nanoid } from "nanoid";
+import {
+  NotificationBell,
+  AppNotification,
+} from "@/components/ui/NotificationBell";
 
 ChartJS.register(
   CategoryScale,
@@ -59,6 +64,7 @@ export default function Dashboard() {
   const [pickups, setPickups] = useState<Pickup[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const [notifications, setNotifications] = useState<AppNotification[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -113,6 +119,14 @@ export default function Dashboard() {
     });
 
     socket.on("pickup-status-update", (data) => {
+      const newNotif: AppNotification = {
+        id: nanoid(),
+        message: data.message,
+        createdAt: new Date().toISOString(),
+        read: false,
+      };
+      setNotifications((prev) => [newNotif, ...prev]);
+
       if (data.status === "Verified") {
         toast.success(data.message);
       } else {
@@ -126,6 +140,10 @@ export default function Dashboard() {
       socket.disconnect();
     };
   }, []);
+
+  const handleMarkAllAsRead = () => {
+    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+  };
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -219,15 +237,21 @@ export default function Dashboard() {
               Selamat datang di dashboard Anda.
             </p>
           </div>
-          <Button
-            onClick={handleLogout}
-            variant="outline"
-            size="sm"
-            className="bg-white text-black cursor-pointer"
-          >
-            <LogOut className="mr-2 size-4 text-black" />
-            Logout
-          </Button>
+          <div className="flex items-center gap-4">
+            <NotificationBell
+              notifications={notifications}
+              onMarkAllAsRead={handleMarkAllAsRead}
+            />
+            <Button
+              onClick={handleLogout}
+              variant="outline"
+              size="sm"
+              className="bg-white text-black cursor-pointer"
+            >
+              <LogOut className="mr-2 size-4 text-black" />
+              Logout
+            </Button>
+          </div>
         </header>
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
