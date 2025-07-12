@@ -35,7 +35,10 @@ import { jwtDecode } from "jwt-decode";
 import { nanoid } from "nanoid";
 
 // UI Components
-import { NotificationBell, AppNotification } from "@/components/ui/Custom/NotificationBell";
+import {
+  NotificationBell,
+  AppNotification,
+} from "@/components/ui/Custom/NotificationBell";
 import { RecentPickupCard } from "@/components/ui/Custom/RecentPickupCard";
 import { DetailModal } from "@/components/ui/Custom/DetailModal";
 
@@ -282,7 +285,11 @@ export default function Dashboard() {
                 Aktivitas Terbaru
               </h3>
               <Link href="/history">
-                <Button variant="ghost" size="sm" className="text-[#23A4DA] cursor-pointer">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-[#23A4DA] cursor-pointer"
+                >
                   Lihat Semua
                   <ChevronRight className="ml-1 size-4" />
                 </Button>
@@ -411,7 +418,7 @@ const ActionCard = ({
   icon: React.ReactNode;
   primary?: boolean;
 }) => (
-  <Link href={href} className="flex">
+  <Link href={href} className="flex h-full">
     <Card
       className={`group w-full rounded-2xl bg-white shadow-sm transition-all duration-300 hover:scale-[1.02] hover:shadow-xl dark:bg-slate-800`}
     >
