@@ -30,6 +30,8 @@ import {
   ChartOptions,
 } from "chart.js";
 import { lineChartOptions, pieChartOptions } from "@/utils/chartConfig";
+import io from "socket.io-client";
+import { jwtDecode } from "jwt-decode";
 
 ChartJS.register(
   CategoryScale,
@@ -43,6 +45,7 @@ ChartJS.register(
 );
 
 interface User {
+  id: string;
   name: string;
   points: number;
 }
@@ -88,6 +91,41 @@ export default function Dashboard() {
     };
     fetchData();
   }, [router]);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    const socket = io({
+      path: "/api/socket",
+    });
+
+    socket.on("connect", () => {
+      console.log("User connected to socket server.");
+
+      try {
+        const decoded: { id: string } = jwtDecode(token);
+
+        socket.emit("join-room", decoded.id);
+      } catch (error) {
+        console.error("Invalid token:", error);
+      }
+    });
+
+    socket.on("pickup-status-update", (data) => {
+      if (data.status === "Verified") {
+        toast.success(data.message);
+      } else {
+        toast.error(data.message, {
+          description: data.reason ? `Alasan: ${data.reason}` : "",
+        });
+      }
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
