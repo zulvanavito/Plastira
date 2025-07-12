@@ -30,6 +30,11 @@ import { filterPickups, Pickup } from "@/utils/historyUtils";
 import { LogOut, Download } from "lucide-react";
 import { Stats } from "@/types/types";
 import io from "socket.io-client";
+import { nanoid } from "nanoid";
+import {
+  NotificationBell,
+  AppNotification,
+} from "@/components/ui/NotificationBell";
 
 ChartJS.register(
   CategoryScale,
@@ -70,6 +75,7 @@ export default function AdminPickupPage() {
   const [rejectReason, setRejectReason] = useState("");
   const [filterStatus, setFilterStatus] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
+  const [notifications, setNotifications] = useState<AppNotification[]>([]);
 
   const fetchData = useCallback(async () => {
     try {
@@ -134,7 +140,6 @@ export default function AdminPickupPage() {
   };
 
   useEffect(() => {
-    // Inisialisasi koneksi socket
     const socket = io({
       path: "/api/socket",
     });
@@ -143,19 +148,29 @@ export default function AdminPickupPage() {
       console.log("Admin connected to socket server.");
     });
 
-    // Dengerin event notifikasi pickup baru
     socket.on("new-pickup-request", (data) => {
       console.log("New pickup request received:", data);
       toast.info(data.message);
-      // Ambil data terbaru biar list-nya update
+
+      const newNotif: AppNotification = {
+        id: nanoid(),
+        message: data.message,
+        createdAt: new Date().toISOString(),
+        read: false,
+      };
+      setNotifications((prev) => [newNotif, ...prev]);
+
       fetchData();
     });
 
-    // Cleanup pas komponen di-unmount
     return () => {
       socket.disconnect();
     };
-  }, [fetchData]); // tambahin fetchData sebagai dependency
+  }, [fetchData]);
+
+  const handleMarkAllAsRead = () => {
+    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+  };
 
   return (
     <div className="min-h-screen w-full bg-slate-50 dark:bg-slate-900">
@@ -169,15 +184,21 @@ export default function AdminPickupPage() {
               Kelola dan monitor semua aktivitas pickup.
             </p>
           </div>
-          <Button
-            onClick={handleLogout}
-            variant="outline"
-            size="sm"
-            className="bg-white"
-          >
-            <LogOut className="mr-2 size-4" />
-            Logout
-          </Button>
+          <div className="flex items-center gap-4">
+            <NotificationBell
+              notifications={notifications}
+              onMarkAllAsRead={handleMarkAllAsRead}
+            />
+            <Button
+              onClick={handleLogout}
+              variant="outline"
+              size="sm"
+              className="bg-white"
+            >
+              <LogOut className="mr-2 size-4" />
+              Logout
+            </Button>
+          </div>
         </header>
 
         <div className="mb-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-5">
