@@ -5,8 +5,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
+} from "@/components/ui/ShadCN/dropdown-menu";
+import { Button } from "@/components/ui/ShadCN/button";
 import { Bell, CheckCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Fragment } from "react";

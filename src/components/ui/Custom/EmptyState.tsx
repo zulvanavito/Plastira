@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Button } from "./button";
+import { Button } from "@/components/ui/ShadCN/button";
 import { Search, Send } from "lucide-react";
 
 export const EmptyState = () => (

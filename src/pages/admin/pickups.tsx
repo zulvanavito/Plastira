@@ -16,13 +16,18 @@ import {
 } from "chart.js";
 
 // Komponen & Utilitas
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { RejectModal } from "@/components/ui/RejectModal";
-import { DetailModal } from "@/components/ui/DetailModal";
-import { HistoryCard } from "@/components/ui/HistoryCard";
-import { FilterControls } from "@/components/ui/FilterControls";
-import { PaginationControls } from "@/components/ui/PaginationControls";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/ShadCN/card";
+import { Button } from "@/components/ui/ShadCN/button";
+import { RejectModal } from "@/components/ui/Custom/RejectModal";
+import { DetailModal } from "@/components/ui/Custom/DetailModal";
+import { HistoryCard } from "@/components/ui/Custom/HistoryCard";
+import { FilterControls } from "@/components/ui/Custom/FilterControls";
+import { PaginationControls } from "@/components/ui/Custom/PaginationControls";
 import { handleExportCSV, handleExportExcel } from "@/utils/exportUtils";
 import { handleVerify } from "@/utils/verifyUtils";
 import { handleReject } from "@/utils/rejectUtils";
@@ -34,7 +39,7 @@ import { nanoid } from "nanoid";
 import {
   NotificationBell,
   AppNotification,
-} from "@/components/ui/NotificationBell";
+} from "@/components/ui/Custom/NotificationBell";
 
 ChartJS.register(
   CategoryScale,
@@ -48,7 +53,9 @@ ChartJS.register(
 
 const AllPickupsMap = dynamic(
   () =>
-    import("@/components/ui/AllPickupsMap").then((mod) => mod.AllPickupsMap),
+    import("@/components/ui/Custom/AllPickupsMap").then(
+      (mod) => mod.AllPickupsMap
+    ),
   {
     loading: () => (
       <div className="h-full w-full animate-pulse rounded-lg bg-slate-200"></div>

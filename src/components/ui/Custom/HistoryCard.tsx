@@ -1,5 +1,5 @@
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/ShadCN/card";
+import { Button } from "@/components/ui/ShadCN/button";
 import { CheckCircle, XCircle, Loader, User } from "lucide-react";
 import { Pickup } from "@/utils/historyUtils"; // Kita akan buat/update file ini
 
@@ -83,7 +83,6 @@ export const HistoryCard = ({
                 Verifikasi
               </Button>
               <Button
-              
                 size="sm"
                 variant="destructive"
                 className="flex-1 cursor-pointer"

@@ -4,12 +4,12 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from "@/components/ui/ShadCN/dialog";
 import { Pickup } from "@/utils/historyUtils";
 import { User, Mail, Info, Box, Weight, Star } from "lucide-react";
 import dynamic from "next/dynamic";
 
-const Map = dynamic(() => import("@/components/ui/map"), {
+const Map = dynamic(() => import("@/components/ui/ShadCN/map"), {
   loading: () => (
     <div className="h-full w-full animate-pulse rounded-lg bg-slate-200"></div>
   ),
@@ -56,9 +56,7 @@ export const DetailModal = ({
           <DialogTitle>Detail Pickup</DialogTitle>
           <DialogDescription>
             Informasi lengkap{" "}
-            {isAdmin
-              ? `milik ${pickup.userId.name}`
-              : "untuk transaksi"} pada{" "}
+            {isAdmin ? `milik ${pickup.userId.name}` : "untuk transaksi"} pada{" "}
             {new Date(pickup.createdAt).toLocaleDateString("id-ID", {
               day: "2-digit",
               month: "long",
@@ -107,7 +105,7 @@ export const DetailModal = ({
               icon={<Star size={16} />}
             />
           </div>
-          
+
           {pickup.status === "Rejected" &&
             pickup.rejectionNote &&
             pickup.rejectionNote !== "-" && (

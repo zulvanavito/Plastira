@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/ShadCN/card";
+import { Button } from "@/components/ui/ShadCN/button";
 import { toast } from "sonner";
 import {
   LogOut,
@@ -36,7 +36,8 @@ import { nanoid } from "nanoid";
 import {
   NotificationBell,
   AppNotification,
-} from "@/components/ui/NotificationBell";
+} from "@/components/ui/Custom/NotificationBell";
+import { RecentPickupCard } from "@/components/ui/Custom/RecentPickupCard";
 
 ChartJS.register(
   CategoryScale,
@@ -55,6 +56,8 @@ interface User {
   points: number;
 }
 interface Pickup {
+  _id: string;
+  plasticType: string;
   status: "Pending" | "Verified" | "Rejected";
   createdAt: string;
 }
@@ -197,6 +200,8 @@ export default function Dashboard() {
     return { labels, data };
   };
 
+  const recentPickups = pickups.slice(0, 3);
+
   const { labels: lineChartLabels, data: lineChartDataPoints } =
     processChartData();
 
@@ -291,6 +296,33 @@ export default function Dashboard() {
               </div>
             </Card>
           </div>
+        </div>
+
+        <div className="mt-6">
+          <Card className="rounded-2xl bg-white p-6 shadow-sm dark:bg-slate-800">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-200">
+                Aktivitas Terbaru
+              </h3>
+              <Link href="/history">
+                <Button variant="ghost" size="sm" className="text-[#23A4DA]">
+                  Lihat Semua
+                  <ChevronRight className="ml-1 size-4" />
+                </Button>
+              </Link>
+            </div>
+            <div className="space-y-3">
+              {recentPickups.length > 0 ? (
+                recentPickups.map((pickup) => (
+                  <RecentPickupCard key={pickup._id} pickup={pickup} />
+                ))
+              ) : (
+                <p className="text-center text-sm text-slate-500 py-4">
+                  Kamu belum punya request pickup.
+                </p>
+              )}
+            </div>
+          </Card>
         </div>
 
         <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-3">

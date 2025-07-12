@@ -1,12 +1,12 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/ShadCN/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Textarea } from "@/components/ui/textarea";
+} from "@/components/ui/ShadCN/dialog";
+import { Textarea } from "@/components/ui/ShadCN/textarea";
 
 interface RejectModalProps {
   isOpen: boolean;
