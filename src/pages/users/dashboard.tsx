@@ -15,6 +15,7 @@ import {
   Loader,
   Trash2,
   Trophy,
+  Gift,
 } from "lucide-react";
 import Link from "next/link";
 import { Line, Pie } from "react-chartjs-2";
@@ -264,7 +265,7 @@ export default function Dashboard() {
         </header>
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-          <div className="md:col-span-2">
+          <div className="md:col-span-1">
             <ActionCard
               href="/users/request"
               title="Buat Request Pickup Baru"
@@ -273,24 +274,8 @@ export default function Dashboard() {
               primary
             />
           </div>
-          <StatCard title="Total Poin" value={user.points} icon={<Star />} />
-        </div>
-
-        <div className="mt-6">
-          <BadgeDisplay badges={user.badges} />
-        </div>
-
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-          <div className="md:col-span-1">
-            <ActionCard
-              href="/users/leaderboard"
-              title="Papan Peringkat"
-              description="Lihat peringkatmu."
-              icon={<Trophy />}
-            />
-          </div>
           <div className="md:col-span-2">
-            <Card className="rounded-2xl bg-white p-6 shadow-sm dark:bg-slate-800">
+            <Card className="h-full rounded-2xl bg-white p-6 shadow-sm dark:bg-slate-800">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-200">
                   Aktivitas Terbaru
@@ -323,6 +308,30 @@ export default function Dashboard() {
               </div>
             </Card>
           </div>
+        </div>
+
+        <div className="mt-6">
+          <BadgeDisplay badges={user.badges} />
+        </div>
+
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+          <div className="md:col-span-1">
+            <ActionCard
+              href="/users/leaderboard"
+              title="Papan Peringkat"
+              description="Lihat peringkatmu di antara pahlawan lain."
+              icon={<Trophy />}
+            />
+          </div>
+          <div className="md:col-span-1">
+            <ActionCard
+              href="/users/redeem"
+              title="Tukar Poin"
+              description="Lihat & tukar hadiah menarik."
+              icon={<Gift />} // Ganti dengan ikon yang sesuai
+            />
+          </div>
+          <StatCard title="Total Poin" value={user.points} icon={<Star />} />
         </div>
 
         <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-5">
@@ -360,13 +369,12 @@ export default function Dashboard() {
               icon={<History />}
             />
           </div>
-
           <div className="md:col-span-2">
             <Card className="h-full rounded-2xl bg-white p-6 shadow-sm dark:bg-slate-800">
               <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-200">
                 Ringkasan Aktivitas
               </h3>
-              <div className="grid grid-cols-1 gap-4">
+              <div className="grid grid-cols-2 gap-4">
                 <MiniStat
                   title="Total Pickups"
                   value={pickups.length}

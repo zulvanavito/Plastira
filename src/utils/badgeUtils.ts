@@ -5,7 +5,12 @@ export const checkAndAwardBadges = async (userId: string) => {
   const user = await User.findById(userId);
   if (!user) return;
 
-  const userPickups = await PickupModel.find({ userId: user._id });
+  // Pastikan user.badges adalah array, kalo gak ada, bikin jadi array kosong
+  if (!user.badges) {
+    user.badges = [];
+  }
+
+  const userPickups: IPickup[] = await PickupModel.find({ userId: user._id });
   if (userPickups.length === 0) return;
 
   const newBadges: string[] = [];
@@ -28,7 +33,7 @@ export const checkAndAwardBadges = async (userId: string) => {
     newBadges.push("Pahlawan PET");
   }
 
-  // 4. Lencana "Konsisten King" (5 pickups in the last 30 days)
+  // 4. Lencana "Konsisten King" (5 pickups dalam 30 hari terakhir)
   const oneMonthAgo = new Date();
   oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
   const recentPickups = userPickups.filter(
@@ -38,7 +43,7 @@ export const checkAndAwardBadges = async (userId: string) => {
     newBadges.push("Konsisten King");
   }
 
-  // 5. Lencana "Kolektor Komplit" (Collected 3 different plastic types)
+  // 5. Lencana "Kolektor Komplit" (Mengumpulkan 3 jenis plastik berbeda)
   const uniquePlasticTypes = new Set(
     userPickups.map((p: IPickup) => p.plasticType)
   );
@@ -49,7 +54,7 @@ export const checkAndAwardBadges = async (userId: string) => {
     newBadges.push("Kolektor Komplit");
   }
 
-  // 6. Lencana "Berat Bersih" (Total weight of 50kg)
+  // 6. Lencana "Berat Bersih" (Total berat 50kg)
   const totalWeight = userPickups.reduce(
     (sum: number, p: IPickup) => sum + p.weightKg,
     0
