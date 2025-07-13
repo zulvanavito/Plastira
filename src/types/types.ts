@@ -17,3 +17,24 @@ export interface Stats {
   pending: number;
   pointsTotal: number;
 }
+export interface Voucher {
+  _id: string;
+  name: string;
+  description: string;
+  pointsRequired: number;
+}
+
+export interface RedemptionHistory {
+  _id: string;
+  voucher: {
+    name: string;
+  };
+  pointsSpent: number;
+  redeemedAt: string;
+}
+
+// Tipe untuk data user, termasuk poin
+export interface UserProfile {
+  name: string;
+  points: number;
+}
