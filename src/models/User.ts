@@ -7,6 +7,7 @@ export interface IUser extends Document {
   role: "user" | "admin";
   points: number;
   createdAt: Date;
+  badges: string[];
 }
 
 const UserSchema: Schema = new Schema<IUser>({
@@ -16,6 +17,7 @@ const UserSchema: Schema = new Schema<IUser>({
   role: { type: String, enum: ["user", "admin"], default: "user" },
   points: { type: Number, default: 0 },
   createdAt: { type: Date, default: Date.now },
+  badges: [{ type: String }],
 });
 
 export default models.User || model<IUser>("User", UserSchema);

@@ -103,7 +103,7 @@ export default function RequestPickupPage() {
               Isi detail sampah dan lokasimu di bawah ini.
             </p>
           </div>
-          <Link href="/dashboard">
+          <Link href="/users/dashboard">
             <Button
               variant="outline"
               size="sm"

@@ -4,6 +4,7 @@ import Pickup from "@/models/Pickup";
 import User from "@/models/User";
 import { verifyToken } from "@/utils/auth";
 import { Server as ServerIO } from "socket.io";
+import { checkAndAwardBadges } from "@/utils/badgeUtils";
 
 type NextApiResponseWithSocket = NextApiResponse & {
   socket: {
@@ -25,7 +26,6 @@ export default async function handler(
     return res.status(403).json({ msg: "Akses ditolak. Bukan admin." });
   }
 
-  // Handle Verifikasi (PUT)
   if (req.method === "PUT") {
     const { id } = req.body;
     const pickup = await Pickup.findById(id);
@@ -38,7 +38,15 @@ export default async function handler(
     pickup.pointsAwarded = points;
     await pickup.save();
 
-    await User.findByIdAndUpdate(pickup.userId, { $inc: { points } });
+    const user = await User.findByIdAndUpdate(
+      pickup.userId,
+      { $inc: { points } },
+      { new: true }
+    );
+
+    if (user) {
+      await checkAndAwardBadges(user._id);
+    }
 
     if (io) {
       const notifMessage = `Permintaan pickup Anda untuk ${pickup.plasticType} telah diverifikasi!`;
@@ -54,7 +62,6 @@ export default async function handler(
       .json({ msg: "Pickup berhasil diverifikasi", points });
   }
 
-  // Handle Penolakan (PATCH)
   if (req.method === "PATCH") {
     const { id, note } = req.body;
     const pickup = await Pickup.findById(id);
@@ -69,7 +76,7 @@ export default async function handler(
 
     if (io) {
       const notifMessage = `Permintaan pickup Anda untuk ${pickup.plasticType} ditolak.`;
-      
+
       io.to(pickup.userId.toString()).emit("pickup-status-update", {
         message: notifMessage,
         status: "Rejected",
@@ -80,7 +87,6 @@ export default async function handler(
     return res.status(200).json({ msg: "Pickup berhasil ditolak" });
   }
 
-  // Handle GET (tidak ada perubahan notifikasi)
   if (req.method === "GET") {
     const pickups = await Pickup.find().populate("userId", "name email");
     const stats = {

@@ -14,6 +14,7 @@ import {
   XCircle,
   Loader,
   Trash2,
+  Trophy,
 } from "lucide-react";
 import Link from "next/link";
 import { Line, Pie } from "react-chartjs-2";
@@ -41,9 +42,10 @@ import {
 } from "@/components/ui/Custom/NotificationBell";
 import { RecentPickupCard } from "@/components/ui/Custom/RecentPickupCard";
 import { DetailModal } from "@/components/ui/Custom/DetailModal";
+import { BadgeDisplay } from "@/components/ui/Custom/BadgeDisplay";
 
 // Types
-import { Pickup as FullPickupType } from "@/utils/historyUtils"; // <-- Ganti nama ini biar jelas ini tipe data LENGKAP
+import { Pickup as FullPickupType } from "@/utils/historyUtils";
 
 ChartJS.register(
   CategoryScale,
@@ -60,18 +62,15 @@ interface User {
   id: string;
   name: string;
   points: number;
+  badges: string[];
 }
-
-// HAPUS interface PickupType yang ada di sini untuk menghindari konflik
 
 export default function Dashboard() {
   const [user, setUser] = useState<User | null>(null);
-  // GUNAKAN TIPE DATA YANG LENGKAP DARI historyUtils
   const [pickups, setPickups] = useState<FullPickupType[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const [notifications, setNotifications] = useState<AppNotification[]>([]);
-  // GUNAKAN TIPE DATA YANG LENGKAP JUGA UNTUK MODAL
   const [selectedPickup, setSelectedPickup] = useState<FullPickupType | null>(
     null
   );
@@ -88,7 +87,6 @@ export default function Dashboard() {
           axios.get<{ user: User }>("/api/user/me", {
             headers: { Authorization: `Bearer ${token}` },
           }),
-          // Pastikan API mengembalikan data sesuai FullPickupType
           axios.get<{ pickups: FullPickupType[] }>("/api/pickups/me", {
             headers: { Authorization: `Bearer ${token}` },
           }),
@@ -257,9 +255,9 @@ export default function Dashboard() {
               onClick={handleLogout}
               variant="outline"
               size="sm"
-              className="bg-white text-black cursor-pointer"
+              className="bg-white hover:bg-[#00A7ED] hover:text-white shadow-sm cursor-pointer"
             >
-              <LogOut className="mr-2 size-4 text-black" />
+              <LogOut className="mr-2 size-4 cursor-pointer" />
               Logout
             </Button>
           </div>
@@ -268,7 +266,7 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
           <div className="md:col-span-2">
             <ActionCard
-              href="/request"
+              href="/users/request"
               title="Buat Request Pickup Baru"
               description="Kumpulkan sampah plastikmu dan dapatkan poin."
               icon={<Send />}
@@ -279,38 +277,52 @@ export default function Dashboard() {
         </div>
 
         <div className="mt-6">
-          <Card className="rounded-2xl bg-white p-6 shadow-sm dark:bg-slate-800">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-200">
-                Aktivitas Terbaru
-              </h3>
-              <Link href="/history">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="text-[#23A4DA] cursor-pointer"
-                >
-                  Lihat Semua
-                  <ChevronRight className="ml-1 size-4" />
-                </Button>
-              </Link>
-            </div>
-            <div className="space-y-3">
-              {recentPickups.length > 0 ? (
-                recentPickups.map((pickup) => (
-                  <RecentPickupCard
-                    key={pickup._id}
-                    pickup={pickup}
-                    onClick={() => setSelectedPickup(pickup)}
-                  />
-                ))
-              ) : (
-                <p className="text-center text-sm text-slate-500 py-4">
-                  Kamu belum punya request pickup.
-                </p>
-              )}
-            </div>
-          </Card>
+          <BadgeDisplay badges={user.badges} />
+        </div>
+
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+          <div className="md:col-span-1">
+            <ActionCard
+              href="/users/leaderboard"
+              title="Papan Peringkat"
+              description="Lihat peringkatmu."
+              icon={<Trophy />}
+            />
+          </div>
+          <div className="md:col-span-2">
+            <Card className="rounded-2xl bg-white p-6 shadow-sm dark:bg-slate-800">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-200">
+                  Aktivitas Terbaru
+                </h3>
+                <Link href="/users/history">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-[#23A4DA] cursor-pointer"
+                  >
+                    Lihat Semua
+                    <ChevronRight className="ml-1 size-4" />
+                  </Button>
+                </Link>
+              </div>
+              <div className="space-y-3">
+                {recentPickups.length > 0 ? (
+                  recentPickups.map((pickup) => (
+                    <RecentPickupCard
+                      key={pickup._id}
+                      pickup={pickup}
+                      onClick={() => setSelectedPickup(pickup)}
+                    />
+                  ))
+                ) : (
+                  <p className="text-center text-sm text-slate-500 py-4">
+                    Kamu belum punya request pickup.
+                  </p>
+                )}
+              </div>
+            </Card>
+          </div>
         </div>
 
         <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-5">
@@ -342,18 +354,19 @@ export default function Dashboard() {
         <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-3">
           <div className="md:col-span-1">
             <ActionCard
-              href="/history"
+              href="/users/history"
               title="Riwayat Pickup"
               description="Lihat semua transaksimu."
               icon={<History />}
             />
           </div>
+
           <div className="md:col-span-2">
             <Card className="h-full rounded-2xl bg-white p-6 shadow-sm dark:bg-slate-800">
               <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-200">
                 Ringkasan Aktivitas
               </h3>
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div className="grid grid-cols-1 gap-4">
                 <MiniStat
                   title="Total Pickups"
                   value={pickups.length}
@@ -448,6 +461,7 @@ const ActionCard = ({
     </Card>
   </Link>
 );
+
 const MiniStat = ({
   title,
   value,
