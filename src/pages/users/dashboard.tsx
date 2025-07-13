@@ -285,12 +285,12 @@ export default function Dashboard() {
             <ActionCard
               href="/users/leaderboard"
               title="Papan Peringkat"
-              description="Lihat peringkatmu."
+              description="Lihat peringkatmu di antara pahlawan lain."
               icon={<Trophy />}
             />
           </div>
           <div className="md:col-span-2">
-            <Card className="rounded-2xl bg-white p-6 shadow-sm dark:bg-slate-800">
+            <Card className="h-full rounded-2xl bg-white p-6 shadow-sm dark:bg-slate-800">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-200">
                   Aktivitas Terbaru
