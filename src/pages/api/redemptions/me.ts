@@ -1,12 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { dbConnect } from "@/lib/db";
-import Redemption, { IRedemption } from "@/models/Redemption";
-import { IVoucher } from "@/models/Voucher";
+import Redemption from "@/models/Redemption";
 import { verifyToken } from "@/utils/auth";
-
-type PopulatedRedemption = Omit<IRedemption, "voucherId"> & {
-  voucherId: Pick<IVoucher, "name">;
-};
 
 export default async function handler(
   req: NextApiRequest,
@@ -19,28 +14,27 @@ export default async function handler(
   try {
     await dbConnect();
     const user = verifyToken(req);
-    if (!user?.id) {
-      return res.status(401).json({ msg: "Unauthorized" });
-    }
+    if (!user?.id) return res.status(401).json({ msg: "Unauthorized" });
 
-    const redemptions = (await Redemption.find({ userId: user.id })
+    const redemptions = await Redemption.find({ userId: user.id })
       .sort({ redeemedAt: -1 })
-      .populate("voucherId", "name")) as PopulatedRedemption[];
+      .lean();
 
+    // --- SESUAIKAN DENGAN STRUKTUR BARU ---
     const transformedRedemptions = redemptions.map((r) => ({
-      _id: r._id,
-      voucher: {
-        name: r.voucherId.name,
-      },
+      _id: r._id ? r._id.toString() : "", // Ensure _id is not unknown
+      name: r.voucherName, // Use voucherName from IRedemption
+      description: r.voucherDescription, // Use voucherDescription from IRedemption
       pointsSpent: r.pointsSpent,
-      redeemedAt: r.redeemedAt,
+      redeemedAt: (r.redeemedAt as Date).toISOString(),
     }));
 
     res.status(200).json({ redemptions: transformedRedemptions });
   } catch (err) {
-    res
-      .status(500)
-      .json({ msg: "Server error", error: (err as Error).message });
+    const errorMessage =
+      err instanceof Error
+        ? err.message
+        : "Terjadi kesalahan yang tidak diketahui.";
+    res.status(500).json({ msg: "Server error", error: errorMessage });
   }
 }
-

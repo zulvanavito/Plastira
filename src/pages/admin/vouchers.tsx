@@ -336,7 +336,7 @@ export default function AdminVouchersPage() {
 
         {/* --- Dialog untuk Konfirmasi Delete --- */}
         <Dialog open={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
-          <DialogContent>
+          <DialogContent className="bg-white text-slate-800">
             <DialogHeader>
               <DialogTitle>Anda Yakin?</DialogTitle>
               <DialogDescription>
@@ -350,8 +350,9 @@ export default function AdminVouchersPage() {
             </DialogHeader>
             <DialogFooter>
               <Button
-                variant="ghost"
+                variant="outline"
                 onClick={() => setIsDeleteModalOpen(false)}
+                className="cursor-pointer hover:bg-slate-100"
               >
                 Batal
               </Button>
@@ -359,6 +360,7 @@ export default function AdminVouchersPage() {
                 variant="destructive"
                 onClick={handleConfirmDelete}
                 disabled={isSubmitting}
+                className="cursor-pointer"
               >
                 {isSubmitting ? "Menghapus..." : "Ya, Hapus"}
               </Button>
@@ -398,6 +400,9 @@ export default function AdminVouchersPage() {
                         Nama
                       </TableHead>
                       <TableHead className="text-slate-800 text-center font-bold bg-slate-100">
+                        Deskripsi
+                      </TableHead>
+                      <TableHead className="text-slate-800 text-center font-bold bg-slate-100">
                         Poin
                       </TableHead>
                       <TableHead className="text-slate-800 text-center font-bold bg-slate-100">
@@ -412,23 +417,26 @@ export default function AdminVouchersPage() {
                     {vouchers.length > 0 ? (
                       vouchers.map((v) => (
                         <TableRow key={v._id}>
-                          <TableCell className="text-center">
+                          <TableCell className="w-24 text-center align-middle">
                             {v.imageUrl ? (
                               <Image
                                 src={v.imageUrl}
                                 alt={v.name}
-                                width={64}
-                                height={64}
-                                className="h-16 w-16 rounded-md object-cover"
+                                width={100}
+                                height={100}
+                                className="inline-block h-20 w-20 rounded-md object-cover"
                               />
                             ) : (
-                              <div className="flex h-16 w-16 items-center justify-center rounded-md bg-slate-200 text-slate-500 text-center">
+                              <div className="inline-flex h-16 w-16 items-center justify-center rounded-md bg-slate-200 text-slate-500">
                                 No Img
                               </div>
                             )}
                           </TableCell>
                           <TableCell className="font-medium text-center">
                             {v.name}
+                          </TableCell>
+                          <TableCell className="max-w-xs truncate whitespace-normal">
+                            {v.description}
                           </TableCell>
                           <TableCell className="text-center">
                             {v.pointsRequired}

@@ -22,18 +22,18 @@ export interface Voucher {
   name: string;
   description: string;
   pointsRequired: number;
+  imageUrl?: string;
+  stock: number;
 }
 
 export interface RedemptionHistory {
   _id: string;
-  voucher: {
-    name: string;
-  };
+  name: string;
+  description: string;
   pointsSpent: number;
   redeemedAt: string;
 }
 
-// Tipe untuk data user, termasuk poin
 export interface UserProfile {
   name: string;
   points: number;
