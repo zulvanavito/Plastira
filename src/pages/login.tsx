@@ -34,7 +34,7 @@ export default function LoginPage() {
       toast.success("Login berhasil");
 
       if (role === "admin") {
-        router.push("/admin/pickups");
+        router.push("/admin/dashboard");
       } else {
         router.push("/users/dashboard");
       }
