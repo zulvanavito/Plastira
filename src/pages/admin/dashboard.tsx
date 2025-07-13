@@ -32,7 +32,7 @@ import { handleExportCSV, handleExportExcel } from "@/utils/exportUtils";
 import { handleVerify } from "@/utils/verifyUtils";
 import { handleReject } from "@/utils/rejectUtils";
 import { filterPickups, Pickup } from "@/utils/historyUtils";
-import { LogOut, Download } from "lucide-react";
+import { LogOut, Download, Ticket } from "lucide-react";
 import { Stats } from "@/types/types";
 import io from "socket.io-client";
 import { nanoid } from "nanoid";
@@ -40,6 +40,7 @@ import {
   NotificationBell,
   AppNotification,
 } from "@/components/ui/Custom/NotificationBell";
+import Link from "next/link";
 
 ChartJS.register(
   CategoryScale,
@@ -185,10 +186,10 @@ export default function AdminPickupPage() {
         <header className="mb-8 flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-slate-800 dark:text-white">
-              Admin Dashboard
+              Halo, Admin Plastira 💧
             </h1>
             <p className="text-slate-500 dark:text-slate-400">
-              Kelola dan monitor semua aktivitas pickup.
+              Pantau dan kelola semua aktivitas pickup dengan statistik real-time, riwayat lengkap, dan peta sebaran lokasi.
             </p>
           </div>
           <div className="flex items-center gap-4">
@@ -219,6 +220,17 @@ export default function AdminPickupPage() {
             color="indigo"
           />
         </div>
+
+        <Link href="/admin/vouchers" className="col-span-1 flex mb-6 shadow-sm">
+            <Card className="hover:bg-slate-100 dark:hover:bg-slate-800 flex w-full cursor-pointer flex-col items-center justify-center rounded-2xl shadow-none transition-colors">
+              <CardContent className="p-6 text-center">
+                <Ticket className="mx-auto h-8 w-8 text-slate-500" />
+                <p className="mt-2 font-semibold text-slate-700 dark:text-slate-200">
+                  Manajemen Voucher
+                </p>
+              </CardContent>
+            </Card>
+          </Link>
 
         <div className="mb-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
           <Card className="rounded-2xl shadow-sm">

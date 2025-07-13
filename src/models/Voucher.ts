@@ -8,6 +8,7 @@ export interface IVoucher extends Document {
   pointsRequired: number;
   stock: number;
   isActive: boolean;
+  imageUrl?: string;
 }
 
 const VoucherSchema: Schema<IVoucher> = new Schema({
@@ -16,6 +17,9 @@ const VoucherSchema: Schema<IVoucher> = new Schema({
   pointsRequired: { type: Number, required: true },
   stock: { type: Number, default: 999 },
   isActive: { type: Boolean, default: true },
-});
+  imageUrl: { type: String, required: false },
+})
+
+
 
 export default models.Voucher || model<IVoucher>("Voucher", VoucherSchema);
