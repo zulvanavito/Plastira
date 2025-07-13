@@ -36,7 +36,7 @@ export default function LoginPage() {
       if (role === "admin") {
         router.push("/admin/pickups");
       } else {
-        router.push("/dashboard");
+        router.push("/users/dashboard");
       }
     } catch {
       toast.error("Login gagal, cek kembali email dan password Anda.");

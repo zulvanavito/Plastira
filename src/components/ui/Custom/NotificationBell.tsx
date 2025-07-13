@@ -55,7 +55,7 @@ export const NotificationBell = ({
       }}
     >
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="icon" className="relative rounded-full">
+        <Button variant="outline" size="icon" className="relative rounded-full cursor-pointer hover:bg-[#00A7ED] hover:text-white shadow-sm ">
           <Bell className="size-5" />
           {unreadCount > 0 && (
             <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-bold text-white">

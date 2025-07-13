@@ -68,7 +68,7 @@ export default function HistoryPage() {
               Semua transaksi pickup Anda tercatat di sini.
             </p>
           </div>
-          <Link href="/dashboard">
+          <Link href="/users/dashboard">
             <Button
               variant="outline"
               size="sm"

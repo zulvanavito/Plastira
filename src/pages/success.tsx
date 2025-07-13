@@ -29,7 +29,7 @@ export default function RequestSuccessPage() {
           </p>
           <div className="flex flex-col gap-2 sm:flex-row">
             <Button
-              onClick={() => router.push("/dashboard")}
+              onClick={() => router.push("/users/dashboard")}
               className="w-1/2 bg-white hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 shadow-sm cursor-pointer text-black dark:text-white"
               variant="outline"
             >
@@ -37,7 +37,7 @@ export default function RequestSuccessPage() {
               Kembali ke Dashboard
             </Button>
             <Button
-              onClick={() => router.push("/request")}
+              onClick={() => router.push("/users/request")}
               className="w-1/2 cursor-pointer bg-[#23A4DA] hover:bg-[#34b7ed] text-white shadow-sm dark:hover:bg-[#1a8bbd] dark:shadow-md hover:text-white"
             >
               <Send className="mr-2 size-4" />

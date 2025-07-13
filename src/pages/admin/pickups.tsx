@@ -200,7 +200,7 @@ export default function AdminPickupPage() {
               onClick={handleLogout}
               variant="outline"
               size="sm"
-              className="bg-white"
+              className="bg-white hover:bg-[#00A7ED] hover:text-white shadow-sm cursor-pointer"
             >
               <LogOut className="mr-2 size-4" />
               Logout
@@ -299,17 +299,18 @@ export default function AdminPickupPage() {
           />
         </Card>
 
-        <Card className="mt-8 rounded-2xl shadow-sm">
-          <CardHeader>
-            <CardTitle>Peta Sebaran Lokasi Pickup</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="h-[500px] w-full rounded-lg">
-              <AllPickupsMap pickups={filtered} />
-            </div>
-          </CardContent>
-        </Card>
-
+        <div className="relative z-10">
+          <Card className="mt-8 rounded-2xl shadow-sm">
+            <CardHeader>
+              <CardTitle>Peta Sebaran Lokasi Pickup</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="h-[500px] w-full rounded-lg">
+                <AllPickupsMap pickups={filtered} />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
         <DetailModal
           pickup={selectedPickup}
           isOpen={showDetail}
