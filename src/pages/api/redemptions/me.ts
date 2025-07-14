@@ -20,11 +20,10 @@ export default async function handler(
       .sort({ redeemedAt: -1 })
       .lean();
 
-    // --- SESUAIKAN DENGAN STRUKTUR BARU ---
     const transformedRedemptions = redemptions.map((r) => ({
-      _id: r._id ? r._id.toString() : "", // Ensure _id is not unknown
-      name: r.voucherName, // Use voucherName from IRedemption
-      description: r.voucherDescription, // Use voucherDescription from IRedemption
+      _id: r._id ? r._id.toString() : "",
+      name: r.voucherName,
+      description: r.voucherDescription,
       pointsSpent: r.pointsSpent,
       redeemedAt: (r.redeemedAt as Date).toISOString(),
     }));

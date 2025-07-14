@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { dbConnect } from "@/lib/db";
 import User from "@/models/User";
-import Voucher, { IVoucher } from "@/models/Voucher"; // <-- Impor IVoucher
+import Voucher, { IVoucher } from "@/models/Voucher";
 import Redemption from "@/models/Redemption";
 import { verifyToken } from "@/utils/auth";
 
@@ -21,8 +21,7 @@ export default async function handler(
     }
 
     const user = await User.findById(tokenPayload.id);
-    // --- PERBAIKAN UTAMA DI SINI ---
-    // Kita secara eksplisit memberitahu TypeScript bahwa hasil dari query ini adalah IVoucher
+
     const voucher: IVoucher | null = await Voucher.findById(voucherId);
 
     if (!user) {
@@ -31,7 +30,6 @@ export default async function handler(
     if (!voucher) {
       return res.status(404).json({ msg: "Voucher tidak ditemukan." });
     }
-    // Sekarang TypeScript tahu properti di bawah ini ada
     if (voucher.stock <= 0) {
       return res.status(400).json({ msg: "Stok voucher habis." });
     }
@@ -39,20 +37,18 @@ export default async function handler(
       return res.status(400).json({ msg: "Poin Anda tidak cukup." });
     }
 
-    // Menggunakan .updateOne() untuk operasi yang lebih efisien
     await User.updateOne(
       { _id: user._id },
       { $inc: { points: -voucher.pointsRequired } }
     );
     await Voucher.updateOne({ _id: voucher._id }, { $inc: { stock: -1 } });
 
-    // Membuat riwayat penukaran dengan data yang benar
     await Redemption.create({
       userId: user._id,
       voucherId: voucher._id,
       pointsSpent: voucher.pointsRequired,
-      name: voucher.name,
-      description: voucher.description,
+      voucherName: voucher.name,
+      voucherDescription: voucher.description,
     });
 
     res
