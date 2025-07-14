@@ -199,7 +199,7 @@ export default function AdminVouchersPage() {
               mengedit, atau menonaktifkannya.
             </p>
           </div>
-          <Link href="/users/dashboard">
+          <Link href="/admin/dashboard">
             <Button
               variant="outline"
               size="sm"
