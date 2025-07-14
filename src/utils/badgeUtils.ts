@@ -5,7 +5,6 @@ export const checkAndAwardBadges = async (userId: string) => {
   const user = await User.findById(userId);
   if (!user) return;
 
-  // Pastikan user.badges adalah array, kalo gak ada, bikin jadi array kosong
   if (!user.badges) {
     user.badges = [];
   }
@@ -63,7 +62,6 @@ export const checkAndAwardBadges = async (userId: string) => {
     newBadges.push("Berat Bersih");
   }
 
-  // Simpan lencana baru ke database
   if (newBadges.length > 0) {
     user.badges.push(...newBadges);
     await user.save();

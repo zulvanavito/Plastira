@@ -310,11 +310,15 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="mt-6">
-          <BadgeDisplay badges={user.badges} />
+        <div className="grid grid-cols-2 gap-6 md:grid-cols-3 my-6">
+          <div className="md:col-span-2">
+            <BadgeDisplay badges={user.badges} />
+          </div>
+          <StatCard title="Total Poin" value={user.points} icon={<Star />} />
+          
         </div>
 
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+        <div className="grid grid-cols-2 gap-6 md:grid-cols-3">
           <div className="md:col-span-1">
             <ActionCard
               href="/users/leaderboard"
@@ -323,7 +327,7 @@ export default function Dashboard() {
               icon={<Trophy />}
             />
           </div>
-          <div className="md:col-span-1">
+          <div className="md:col-span-2">
             <ActionCard
               href="/users/redeem"
               title="Tukar Poin"
@@ -331,7 +335,6 @@ export default function Dashboard() {
               icon={<Gift />} // Ganti dengan ikon yang sesuai
             />
           </div>
-          <StatCard title="Total Poin" value={user.points} icon={<Star />} />
         </div>
 
         <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-5">

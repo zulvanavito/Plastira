@@ -12,7 +12,10 @@ export default async function handler(
   try {
     await dbConnect();
     const decoded = verifyToken(req);
-    const user = await User.findById(decoded.id).select("name role points");
+
+    const user = await User.findById(decoded.id).select(
+      "name role points badges"
+    );
 
     if (!user) return res.status(404).json({ msg: "User tidak ditemukan" });
 
