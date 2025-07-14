@@ -24,6 +24,10 @@ export interface Voucher {
   pointsRequired: number;
   imageUrl?: string;
   stock: number;
+  sponsoredBy?: {
+    _id: string;
+    companyName: string;
+  };
 }
 
 export interface RedemptionHistory {

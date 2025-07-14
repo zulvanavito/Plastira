@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { Button } from "@/components/ui/ShadCN/button";
+// Hapus import IVoucher yang tidak terpakai, kita akan definisikan tipe di bawah
 import { ArrowLeft, Gift, Star, Ticket, Package } from "lucide-react";
 import {
   Card,
@@ -11,7 +12,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/ShadCN/card";
-import { Voucher, RedemptionHistory, UserProfile } from "@/types/types";
+// Import tipe yang sudah ada dari types.ts
+import { RedemptionHistory, UserProfile } from "@/types/types";
 import Image from "next/image";
 import {
   Dialog,
@@ -21,17 +23,38 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/ShadCN/dialog";
-import { PaginationControls } from "@/components/ui/Custom/PaginationControls"; // <-- IMPORT KOMPONEN PAGINATION
+import { PaginationControls } from "@/components/ui/Custom/PaginationControls";
 
-// Komponen Kartu Voucher (Tidak ada perubahan)
+// --- PERUBAHAN UTAMA ADA DI SINI ---
+// Kita gunakan tipe Voucher yang sudah ada dari types.ts dan kita tambahkan properti 'sponsoredBy'
+// Ini cara yang aman dan gak akan merusak kode lo yang lain
+export interface Voucher {
+  _id: string;
+  name: string;
+  description: string;
+  pointsRequired: number;
+  imageUrl?: string;
+  stock: number;
+  sponsoredBy?: {
+    _id: string;
+    companyName: string;
+  };
+}
+
 interface VoucherCardProps {
   voucher: Voucher;
   onRedeem: (voucher: Voucher) => void;
   disabled: boolean;
 }
 
+// Komponen VoucherCard ini kita sesuaikan sedikit untuk menampilkan info sponsor
 const VoucherCard = ({ voucher, onRedeem, disabled }: VoucherCardProps) => (
-  <Card className="flex flex-col rounded-2xl shadow-sm transition-all hover:shadow-lg">
+  <Card className="flex flex-col rounded-2xl shadow-sm transition-all hover:shadow-lg relative">
+    {voucher.sponsoredBy && (
+      <div className="absolute top-2 right-2 bg-amber-400 text-black text-xs font-bold px-2 py-1 rounded-full z-10">
+        Disponsori
+      </div>
+    )}
     <CardHeader>
       <div className="relative h-40 w-full overflow-hidden rounded-lg bg-slate-200">
         {voucher.imageUrl ? (
@@ -48,6 +71,12 @@ const VoucherCard = ({ voucher, onRedeem, disabled }: VoucherCardProps) => (
         )}
       </div>
       <CardTitle className="mt-4">{voucher.name}</CardTitle>
+      {/* Tampilkan nama sponsor di sini */}
+      {voucher.sponsoredBy && (
+        <p className="text-xs text-slate-500 -mt-1">
+          oleh <strong>{voucher.sponsoredBy.companyName}</strong>
+        </p>
+      )}
     </CardHeader>
     <CardContent className="flex flex-1 flex-col justify-between">
       <p className="text-sm text-slate-500 dark:text-slate-400">
@@ -86,9 +115,9 @@ const VoucherCard = ({ voucher, onRedeem, disabled }: VoucherCardProps) => (
   </Card>
 );
 
-// Halaman Utama
 export default function RedeemPage() {
   const [user, setUser] = useState<UserProfile | null>(null);
+  // State vouchers dan selectedVoucher sekarang menggunakan tipe Voucher yang sudah disesuaikan
   const [vouchers, setVouchers] = useState<Voucher[]>([]);
   const [history, setHistory] = useState<RedemptionHistory[]>([]);
   const [loading, setLoading] = useState(true);
@@ -97,10 +126,8 @@ export default function RedeemPage() {
   const [isRedeeming, setIsRedeeming] = useState(false);
   const router = useRouter();
 
-  // --- BAGIAN BARU UNTUK PAGINATION ---
   const [currentPage, setCurrentPage] = useState(1);
-  const ITEMS_PER_PAGE = 5; // <-- Kita set 5 item per halaman
-  // --- AKHIR BAGIAN BARU ---
+  const ITEMS_PER_PAGE = 5;
 
   const fetchData = useCallback(async () => {
     const token = localStorage.getItem("token");
@@ -112,9 +139,10 @@ export default function RedeemPage() {
     const headers = { Authorization: `Bearer ${token}` };
 
     setLoading(true);
+    // Kita gunakan Promise.allSettled yang sudah ada di kode lo
     const results = await Promise.allSettled([
       axios.get<{ user: UserProfile }>("/api/user/me", { headers }),
-      axios.get<{ vouchers: Voucher[] }>("/api/vouchers"),
+      axios.get<{ vouchers: Voucher[] }>("/api/vouchers"), // API akan mengembalikan data sesuai tipe Voucher yang baru
       axios.get<{ redemptions: RedemptionHistory[] }>("/api/redemptions/me", {
         headers,
       }),
@@ -158,6 +186,7 @@ export default function RedeemPage() {
     setIsModalOpen(true);
   };
 
+  // Logic handleConfirmRedeem tetap sama, sudah benar
   const handleConfirmRedeem = async () => {
     if (!selectedVoucher) return;
     setIsRedeeming(true);
@@ -193,13 +222,11 @@ export default function RedeemPage() {
     }
   };
 
-  // --- LOGIKA BARU UNTUK PAGINATION ---
   const paginatedHistory = history.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
     currentPage * ITEMS_PER_PAGE
   );
   const totalPages = Math.ceil(history.length / ITEMS_PER_PAGE);
-  // --- AKHIR LOGIKA BARU ---
 
   if (loading) {
     return (
@@ -209,6 +236,7 @@ export default function RedeemPage() {
     );
   }
 
+  // Sisa dari JSX component tidak perlu diubah, karena sudah benar
   return (
     <>
       <div className="flex min-h-screen w-full justify-center bg-slate-50 dark:bg-slate-900">
@@ -271,7 +299,6 @@ export default function RedeemPage() {
                   </p>
                 ) : (
                   <div className="space-y-4">
-                    {/* --- UBAH BAGIAN INI UNTUK MENGGUNAKAN DATA PAGINASI --- */}
                     {paginatedHistory.map((item) => (
                       <div
                         key={item._id}
@@ -307,7 +334,6 @@ export default function RedeemPage() {
                 )}
               </CardContent>
             </Card>
-            {/* --- TAMBAHKAN KONTROL PAGINATION DI SINI --- */}
             <PaginationControls
               currentPage={currentPage}
               totalPages={totalPages}

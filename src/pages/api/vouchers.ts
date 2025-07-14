@@ -9,9 +9,10 @@ export default async function handler(
   if (req.method !== "GET") return res.status(405).end();
   try {
     await dbConnect();
-    const vouchers = await Voucher.find({ isActive: true }).sort({
-      pointsRequired: 1,
-    });
+    const vouchers = await Voucher.find({ isActive: true })
+      .sort({ pointsRequired: 1 })
+      .populate("sponsoredBy", "companyName");
+
     res.status(200).json({ vouchers });
   } catch {
     res.status(500).json({ msg: "Server error" });
