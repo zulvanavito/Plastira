@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 
 interface TokenPayload {
   id: string;
-  role: "user" | "admin";
+  role: "user" | "admin" | "mitra";
   iat?: number;
   exp?: number;
 }
