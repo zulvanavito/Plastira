@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import { useRouter } from "next/router";
+import router from "next/router";
 import {
   Card,
   CardContent,
@@ -19,16 +19,33 @@ import {
 } from "@/components/ui/ShadCN/select";
 import { toast } from "sonner";
 import Link from "next/link";
-import { ArrowLeft, MapPin, Package, Weight } from "lucide-react";
+import {
+  ArrowLeft,
+  MapPin,
+  Package,
+  Weight,
+  BrainCircuit,
+  Loader,
+} from "lucide-react";
 import dynamic from "next/dynamic";
+import * as tmImage from "@teachablemachine/image";
 
-// --- BARU: Dynamic import untuk komponen Map ---
 const Map = dynamic(() => import("@/components/ui/ShadCN/map"), {
   loading: () => (
     <div className="h-full w-full bg-slate-200 animate-pulse rounded-lg"></div>
   ),
   ssr: false,
 });
+
+const URL = "https://teachablemachine.withgoogle.com/models/f7lJT9pEh/";
+
+const classMapping: { [key: string]: string } = {
+  "Polyethlene Terephthalate (PET)": "PET (Polyethylene Terephthalate)",
+  "High Density Polyethylene (HDPE)": "HDPE (High-Density Polyethylene)",
+  "Polypropylene (PP)": "PP (Polypropylene)",
+  "Low Density Polyethylene (LDPE)": "LDPE (Low-Density Polyethylene)",
+  "Other (Lainnya)": "Lainnya",
+};
 
 export default function RequestPickupPage() {
   const [plasticType, setPlasticType] = useState("");
@@ -37,7 +54,26 @@ export default function RequestPickupPage() {
   const [lng, setLng] = useState("");
   const [loading, setLoading] = useState(false);
   const [isLocating, setIsLocating] = useState(true);
-  const router = useRouter();
+  const [isDetecting, setIsDetecting] = useState(false);
+  const [model, setModel] = useState<tmImage.CustomMobileNet | null>(null);
+  const imageUploadRef = useRef<HTMLInputElement>(null);
+
+  // Fungsi untuk load model saat komponen pertama kali dirender
+  useEffect(() => {
+    const loadModel = async () => {
+      const modelURL = URL + "model.json";
+      const metadataURL = URL + "metadata.json";
+      try {
+        const loadedModel = await tmImage.load(modelURL, metadataURL);
+        setModel(loadedModel);
+        toast.success("Fitur deteksi foto siap!");
+      } catch (error) {
+        toast.error("Gagal memuat model deteksi.");
+        console.error("Error loading model:", error);
+      }
+    };
+    loadModel();
+  }, []);
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -58,6 +94,49 @@ export default function RequestPickupPage() {
       setIsLocating(false);
     }
   }, []);
+
+  const handleDetect = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (!event.target.files || event.target.files.length === 0) return;
+    if (!model) {
+      toast.error("Model deteksi belum siap, coba sesaat lagi.");
+      return;
+    }
+
+    const image = event.target.files[0];
+    const imageElement = document.createElement("img");
+    imageElement.src = window.URL.createObjectURL(image);
+
+    setIsDetecting(true);
+    toast.loading("Mendeteksi jenis sampah...");
+
+    imageElement.onload = async () => {
+      try {
+        const predictions = await model.predict(imageElement);
+
+        // Cari prediksi dengan probabilitas tertinggi
+        const topPrediction = predictions.reduce((prev, current) =>
+          prev.probability > current.probability ? prev : current
+        );
+
+        const detectedType = classMapping[topPrediction.className] || "Lainnya";
+
+        setPlasticType(detectedType);
+        toast.dismiss();
+        toast.success(
+          `Terdeteksi sebagai: ${topPrediction.className} (${(
+            topPrediction.probability * 100
+          ).toFixed(1)}%)`
+        );
+      } catch (error) {
+        toast.dismiss();
+        toast.error("Gagal mendeteksi gambar.");
+        console.error("Prediction error:", error);
+      } finally {
+        setIsDetecting(false);
+        window.URL.revokeObjectURL(imageElement.src);
+      }
+    };
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -93,7 +172,6 @@ export default function RequestPickupPage() {
   return (
     <div className="flex min-h-screen w-full items-center justify-center bg-slate-50 dark:bg-slate-900">
       <div className="container mx-auto max-w-5xl px-4 py-8">
-        {/* Header */}
         <header className="mb-8 flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-slate-800 dark:text-white">
@@ -109,8 +187,7 @@ export default function RequestPickupPage() {
               size="sm"
               className="cursor-pointer hover:bg-[#00A7ED] hover:text-white shadow-sm"
             >
-              <ArrowLeft className="mr-2 size-4" />
-              Kembali ke Dashboard
+              <ArrowLeft className="mr-2 size-4" /> Kembali ke Dashboard
             </Button>
           </Link>
         </header>
@@ -119,7 +196,6 @@ export default function RequestPickupPage() {
           onSubmit={handleSubmit}
           className="grid grid-cols-1 gap-8 lg:grid-cols-3"
         >
-          {/* Kolom Kiri: Form Detail */}
           <div className="space-y-8 lg:col-span-2">
             <Card className="rounded-2xl shadow-sm">
               <CardHeader>
@@ -158,6 +234,32 @@ export default function RequestPickupPage() {
                       <SelectItem value="Lainnya">Lainnya</SelectItem>
                     </SelectContent>
                   </Select>
+                  <input
+                    type="file"
+                    ref={imageUploadRef}
+                    onChange={handleDetect}
+                    accept="image/*"
+                    className="hidden"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="mt-4 w-full cursor-pointer hover:bg-[#00A7ED] hover:text-white shadow-sm"
+                    onClick={() => imageUploadRef.current?.click()}
+                    disabled={isDetecting || !model}
+                  >
+                    {isDetecting ? (
+                      <>
+                        <Loader className="mr-2 size-4 animate-spin" />
+                        Mendeteksi...
+                      </>
+                    ) : (
+                      <>
+                        <BrainCircuit className="mr-2 size-4" />
+                        Deteksi Otomatis dengan Foto
+                      </>
+                    )}
+                  </Button>
                 </div>
                 <div>
                   <Label className="mb-2" htmlFor="weight" required>
@@ -182,7 +284,6 @@ export default function RequestPickupPage() {
                 </div>
               </CardContent>
             </Card>
-
             <Card className="rounded-2xl shadow-sm">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -224,13 +325,11 @@ export default function RequestPickupPage() {
               type="submit"
               size="lg"
               className="w-full cursor-pointer"
-              disabled={false}
+              disabled={loading || isDetecting}
             >
               {loading ? "Mengirim..." : "Kirim Request"}
             </Button>
           </div>
-
-          {/* Kolom Kanan: Peta & Submit */}
           <div className="space-y-6 lg:col-span-1">
             <Card className="rounded-2xl shadow-sm">
               <CardHeader>
