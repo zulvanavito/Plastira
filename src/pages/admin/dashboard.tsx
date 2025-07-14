@@ -15,7 +15,6 @@ import {
   ArcElement,
 } from "chart.js";
 
-// Komponen & Utilitas
 import {
   Card,
   CardContent,
@@ -32,7 +31,7 @@ import { handleExportCSV, handleExportExcel } from "@/utils/exportUtils";
 import { handleVerify } from "@/utils/verifyUtils";
 import { handleReject } from "@/utils/rejectUtils";
 import { filterPickups, Pickup } from "@/utils/historyUtils";
-import { LogOut, Download, Ticket } from "lucide-react";
+import { LogOut, Download, Ticket, MapIcon, Flame } from "lucide-react";
 import { Stats } from "@/types/types";
 import io from "socket.io-client";
 import { nanoid } from "nanoid";
@@ -189,7 +188,8 @@ export default function AdminPickupPage() {
               Halo, Admin Plastira 💧
             </h1>
             <p className="text-slate-500 dark:text-slate-400">
-              Pantau dan kelola semua aktivitas pickup dengan statistik real-time, riwayat lengkap, dan peta sebaran lokasi.
+              Pantau dan kelola semua aktivitas pickup dengan statistik
+              real-time, riwayat lengkap, dan peta sebaran lokasi.
             </p>
           </div>
           <div className="flex items-center gap-4">
@@ -222,15 +222,15 @@ export default function AdminPickupPage() {
         </div>
 
         <Link href="/admin/vouchers" className="col-span-1 flex mb-6 shadow-sm">
-            <Card className="hover:bg-slate-100 dark:hover:bg-slate-800 flex w-full cursor-pointer flex-col items-center justify-center rounded-2xl shadow-none transition-colors">
-              <CardContent className="p-6 text-center">
-                <Ticket className="mx-auto h-8 w-8 text-slate-500" />
-                <p className="mt-2 font-semibold text-slate-700 dark:text-slate-200">
-                  Manajemen Voucher
-                </p>
-              </CardContent>
-            </Card>
-          </Link>
+          <Card className="hover:bg-slate-100 dark:hover:bg-slate-800 flex w-full cursor-pointer flex-col items-center justify-center rounded-2xl shadow-none transition-colors">
+            <CardContent className="p-6 text-center">
+              <Ticket className="mx-auto h-8 w-8 text-slate-500" />
+              <p className="mt-2 font-semibold text-slate-700 dark:text-slate-200">
+                Manajemen Voucher
+              </p>
+            </CardContent>
+          </Card>
+        </Link>
 
         <div className="mb-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
           <Card className="rounded-2xl shadow-sm">
@@ -266,6 +266,7 @@ export default function AdminPickupPage() {
               <Button
                 variant="outline"
                 onClick={() => handleExportExcel(pickups)}
+                className="cursor-pointer hover:bg-[#00A7ED] hover:text-white shadow-sm"
               >
                 <Download className="mr-2 size-4" />
                 Excel
@@ -273,6 +274,7 @@ export default function AdminPickupPage() {
               <Button
                 variant="outline"
                 onClick={() => handleExportCSV(pickups)}
+                className="cursor-pointer hover:bg-[#00A7ED] hover:text-white shadow-sm"
               >
                 <Download className="mr-2 size-4" />
                 CSV
@@ -311,18 +313,37 @@ export default function AdminPickupPage() {
           />
         </Card>
 
-        <div className="relative z-10">
-          <Card className="mt-8 rounded-2xl shadow-sm">
+        {/* --- Peta dan Heatmap --- */}
+        <div className="relative z-10 mt-8 grid grid-cols-1 gap-8 lg:grid-cols-2">
+          {/* Peta Sebaran Titik */}
+          <Card className="rounded-2xl shadow-sm">
             <CardHeader>
-              <CardTitle>Peta Sebaran Lokasi Pickup</CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                <MapIcon /> Peta Sebaran Lokasi
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="h-[500px] w-full rounded-lg">
-                <AllPickupsMap pickups={filtered} />
+                <AllPickupsMap pickups={filtered} displayMode="markers" />
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Peta Panas (Heatmap) */}
+          <Card className="rounded-2xl shadow-sm">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Flame /> Peta Panas (Heatmap)
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="h-[500px] w-full rounded-lg">
+                <AllPickupsMap pickups={filtered} displayMode="heatmap" />
               </div>
             </CardContent>
           </Card>
         </div>
+
         <DetailModal
           pickup={selectedPickup}
           isOpen={showDetail}
