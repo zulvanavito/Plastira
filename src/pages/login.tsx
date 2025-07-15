@@ -46,7 +46,6 @@ export default function LoginPage() {
   return (
     <div className="flex min-h-screen w-full items-center justify-center bg-gray-100 dark:bg-gray-900">
       <div className="relative flex h-full w-full max-w-4xl flex-row rounded-xl shadow-2xl">
-        {/* --- FORM SEKARANG DI KIRI --- */}
         <div className="flex h-[600px] w-full items-center justify-center rounded-l-xl bg-white p-8 dark:bg-gray-800 md:w-1/2">
           <Card className="w-full max-w-md border-0 shadow-none">
             <CardHeader>
@@ -94,18 +93,21 @@ export default function LoginPage() {
                     href="/register"
                     className="font-semibold text-[#23A4DA] hover:underline"
                   >
-                    Disini
+                    Daftar di sini
                   </Link>
                 </p>
+
+                {/* --- TAMBAHAN BARU DI SINI --- */}
                 <p className="text-center text-sm text-gray-600 dark:text-gray-300">
-                  Atau Daftar Sebagai Mitra Kami{" "}
+                  Masuk sebagai Mitra?{" "}
                   <Link
-                    href="/mitra/register"
+                    href="/mitra/login"
                     className="font-semibold text-[#23A4DA] hover:underline"
                   >
-                    Disini
+                    Klik di sini
                   </Link>
                 </p>
+
                 <Link href="/">
                   <Button
                     variant="ghost"
@@ -119,7 +121,6 @@ export default function LoginPage() {
           </Card>
         </div>
 
-        {/* --- VISUAL SEKARANG DI KANAN --- */}
         <div className="relative hidden h-[600px] w-1/2 flex-col justify-between overflow-hidden rounded-r-xl bg-gradient-to-br from-[#23A4DA] to-[#0A4E6A] p-8 text-white md:flex">
           <h2 className="z-10 text-3xl font-bold">
             Selamat Datang Kembali, Pahlawan Lingkungan!

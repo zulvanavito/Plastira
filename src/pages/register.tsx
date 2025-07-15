@@ -43,7 +43,6 @@ export default function RegisterPage() {
   return (
     <div className="flex min-h-screen w-full items-center justify-center bg-gray-100 dark:bg-gray-900">
       <div className="relative flex h-full w-full max-w-4xl flex-row rounded-xl shadow-2xl">
-        {/* --- Sisi Kiri: Visual --- */}
         <div className="relative hidden h-[650px] w-1/2 flex-col justify-between overflow-hidden rounded-l-xl bg-gradient-to-br from-[#23A4DA] to-[#0A4E6A] p-8 text-white md:flex">
           <h2 className="z-10 text-3xl font-bold">
             Bergabunglah dengan Gerakan Perubahan.
@@ -55,7 +54,6 @@ export default function RegisterPage() {
           <div className="absolute -bottom-10 -right-10 h-32 w-32 rounded-full bg-white/20"></div>
         </div>
 
-        {/* --- Sisi Kanan: Form Registrasi --- */}
         <div className="flex h-auto w-full items-center justify-center rounded-xl bg-white p-8 dark:bg-gray-800 md:h-[650px] md:w-1/2 md:rounded-l-none md:rounded-r-xl">
           <Card className="w-full max-w-md border-0 shadow-none">
             <CardHeader>
@@ -142,15 +140,17 @@ export default function RegisterPage() {
                     Masuk di sini
                   </Link>
                 </p>
+
                 <p className="text-center text-sm text-gray-600 dark:text-gray-300">
-                  Atau Sudah Punya Akun Mitra Kami?{" "}
+                  Daftar sebagai Mitra?{" "}
                   <Link
-                    href="/mitra/login"
+                    href="/mitra/register"
                     className="font-semibold text-[#23A4DA] hover:underline"
                   >
-                    Disini
+                    Klik di sini
                   </Link>
                 </p>
+
                 <Link href="/">
                   <Button
                     variant="ghost"
