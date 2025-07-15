@@ -1,7 +1,7 @@
 # Plastira - Jadilah Pahlawan Lingkungan!
 
 <p align="center">
-  <img src="/public/img/Logo Plastira.png" alt="Plastira Logo" width="150"/>
+  <img src="public/img/teks_icon.png" alt="Plastira Logo" width="150"/>
 </p>
 
 <p align="center">
@@ -21,15 +21,16 @@
 
 ## 🚀 Tentang Proyek
 
-**Plastira** adalah sebuah aplikasi web MVP (*Minimum Viable Product*) yang dirancang untuk menjawab tantangan pengelolaan sampah di masyarakat, khususnya sampah plastik. Aplikasi ini memfasilitasi proses penjemputan sampah dari pengguna, memberikan penghargaan berupa poin (*loyalty program*), dan menyediakan data analitik bagi admin untuk memonitor aktivitas.
+**Plastira** adalah sebuah aplikasi web MVP (_Minimum Viable Product_) yang dirancang untuk menjawab tantangan pengelolaan sampah di masyarakat, khususnya sampah plastik. Aplikasi ini memfasilitasi proses penjemputan sampah dari pengguna, memberikan penghargaan berupa poin (_loyalty program_), dan menyediakan data analitik bagi admin untuk memonitor aktivitas.
 
-Proyek ini dibangun sebagai submisi untuk **IDCamp 2024 Developer Challenge #2 x SheHacks**, dengan mengambil *use case* dari startup **Komodo Water**[cite: 53, 58, 62].
+Proyek ini dibangun sebagai submisi untuk **IDCamp 2024 Developer Challenge #2 x SheHacks**, dengan mengambil _use case_ dari startup **Komodo Water**[cite: 53, 58, 62].
 
 ## ✨ Fitur Utama
 
 Aplikasi ini memiliki dua peran utama: **User** dan **Admin**.
 
 ### Untuk User:
+
 - **🔐 Autentikasi**: Sistem registrasi dan login yang aman.
 - **📊 Dashboard Interaktif**: Menampilkan total poin, ringkasan aktivitas, serta grafik tren pickup bulanan.
 - **📍 Request Pickup**: Form permintaan penjemputan dengan deteksi lokasi otomatis menggunakan Geolocation API.
@@ -37,6 +38,7 @@ Aplikasi ini memiliki dua peran utama: **User** dan **Admin**.
 - **🗺️ Notifikasi Real-time (Konsep)**: Konsep untuk notifikasi status pickup secara langsung (menggunakan WebSockets).
 
 ### Untuk Admin:
+
 - **📈 Dashboard Analitik**: Menampilkan statistik kunci (total pickup, status, total poin) dan visualisasi data melalui Bar Chart & Pie Chart.
 - **🗺️ Peta Sebaran (GIS)**: Peta interaktif yang menampilkan semua lokasi pickup dari user, dengan marker yang bisa di-filter.
 - **✅ Verifikasi & Manajemen**: Admin dapat melakukan verifikasi, menolak (dengan alasan), dan melihat detail setiap request pickup.

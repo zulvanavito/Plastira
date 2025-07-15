@@ -188,3 +188,66 @@ body {
     }
   }
 }
+
+.aurora-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.aurora-shape {
+  position: absolute;
+  border-radius: 100%;
+  filter: blur(80px); /* Kunci dari efek glassmorphism */
+  opacity: 0.4;
+}
+
+.dark .aurora-shape {
+  opacity: 0.3;
+}
+
+.aurora-shape-1 {
+  width: 400px;
+  height: 400px;
+  background-color: #00a7ed; /* Warna utama Plastira */
+  top: 10%;
+  left: 15%;
+  animation: move-aurora-1 20s infinite alternate;
+}
+
+.aurora-shape-2 {
+  width: 350px;
+  height: 350px;
+  background-color: #23a4da;
+  top: 30%;
+  right: 10%;
+  animation: move-aurora-2 25s infinite alternate;
+}
+
+.aurora-shape-3 {
+  width: 300px;
+  height: 300px;
+  background-color: #89e2ff;
+  bottom: 5%;
+  left: 30%;
+  animation: move-aurora-3 18s infinite alternate;
+}
+
+@keyframes move-aurora-1 {
+  from { transform: translate(-50px, -50px) rotate(0deg); }
+  to { transform: translate(50px, 80px) rotate(180deg); }
+}
+
+@keyframes move-aurora-2 {
+  from { transform: translate(30px, 50px) rotate(0deg); }
+  to { transform: translate(-60px, -40px) rotate(220deg); }
+}
+
+@keyframes move-aurora-3 {
+  from { transform: translate(-20px, 40px) rotate(0deg); }
+  to { transform: translate(40px, -60px) rotate(150deg); }
+}
