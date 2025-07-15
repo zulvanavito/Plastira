@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/ShadCN/button";
-import { LogIn, UserPlus } from "lucide-react";
+import { LogIn, UserPlus, Building } from "lucide-react"; // <-- Tambahkan ikon Building
 import Image from "next/image";
 
 export default function Home() {
@@ -8,7 +8,6 @@ export default function Home() {
     <main className="relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden text-white">
       {/* --- Latar Belakang Gambar --- */}
       <div className="absolute inset-0 z-0">
-        {/* Ganti 'src' dengan path gambar lo di folder /public */}
         <Image
           src="/img/kids-in-the-water.jpg"
           alt="Latar belakang lingkungan bersih"
@@ -16,13 +15,11 @@ export default function Home() {
           width={1920}
           height={1080}
         />
-        {/* Overlay gelap biar teks lebih kebaca */}
         <div className="absolute inset-0 bg-black/60 bg-gradient-to-t from-black/70 via-transparent to-black/20"></div>
       </div>
 
       {/* --- Konten Utama --- */}
       <div className="container z-10 flex flex-col items-center gap-6 px-4 text-center">
-        {/* --- Teks & Tombol (dengan animasi) --- */}
         <div className="animate-fade-in-up flex flex-col items-center gap-6">
           <h1 className="text-4xl font-extrabold tracking-tighter text-white drop-shadow-lg md:text-5xl lg:text-6xl">
             Satu Botol, Sejuta{" "}
@@ -41,7 +38,7 @@ export default function Home() {
             <Link href="/login" className="w-full sm:w-auto">
               <Button size="lg" className="w-full cursor-pointer">
                 <LogIn className="mr-2 size-5" />
-                Masuk
+                Login User
               </Button>
             </Link>
             <Link href="/register" className="w-full sm:w-auto">
@@ -51,7 +48,19 @@ export default function Home() {
                 className="w-full cursor-pointer"
               >
                 <UserPlus className="mr-2 size-5" />
-                Daftar Akun
+                Daftar User
+              </Button>
+            </Link>
+
+            {/* --- TAMBAHAN BARU DI SINI --- */}
+            <Link href="/mitra/login" className="w-full sm:w-auto">
+              <Button
+                size="lg"
+                variant="outline"
+                className="w-full cursor-pointer bg-transparent text-white border-white hover:bg-white hover:text-black"
+              >
+                <Building className="mr-2 size-5" />
+                Portal Mitra
               </Button>
             </Link>
           </div>
