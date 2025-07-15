@@ -94,7 +94,16 @@ export default function LoginPage() {
                     href="/register"
                     className="font-semibold text-[#23A4DA] hover:underline"
                   >
-                    Daftar di sini
+                    Disini
+                  </Link>
+                </p>
+                <p className="text-center text-sm text-gray-600 dark:text-gray-300">
+                  Atau Daftar Sebagai Mitra Kami{" "}
+                  <Link
+                    href="/mitra/register"
+                    className="font-semibold text-[#23A4DA] hover:underline"
+                  >
+                    Disini
                   </Link>
                 </p>
                 <Link href="/">

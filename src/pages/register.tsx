@@ -142,6 +142,15 @@ export default function RegisterPage() {
                     Masuk di sini
                   </Link>
                 </p>
+                <p className="text-center text-sm text-gray-600 dark:text-gray-300">
+                  Atau Sudah Punya Akun Mitra Kami?{" "}
+                  <Link
+                    href="/mitra/login"
+                    className="font-semibold text-[#23A4DA] hover:underline"
+                  >
+                    Disini
+                  </Link>
+                </p>
                 <Link href="/">
                   <Button
                     variant="ghost"
