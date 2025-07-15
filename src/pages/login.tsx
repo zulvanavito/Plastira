@@ -12,15 +12,17 @@ import { Input } from "@/components/ui/ShadCN/input";
 import { Button } from "@/components/ui/ShadCN/button";
 import { toast } from "sonner";
 import Link from "next/link";
-import { LogIn } from "lucide-react";
+import { LogIn, Loader } from "lucide-react";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const res = await axios.post<{ token: string }>("/api/auth/login", {
         email,
@@ -40,6 +42,8 @@ export default function LoginPage() {
       }
     } catch {
       toast.error("Login gagal, cek kembali email dan password Anda.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -83,9 +87,22 @@ export default function LoginPage() {
                   />
                 </div>
 
-                <Button type="submit" className="w-full cursor-pointer">
-                  <LogIn className="mr-2 size-5" />
-                  Masuk
+                <Button
+                  type="submit"
+                  className="w-full cursor-pointer"
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <>
+                      <Loader className="mr-2 size-5 animate-spin" />
+                      Memproses...
+                    </>
+                  ) : (
+                    <>
+                      <LogIn className="mr-2 size-5" />
+                      Masuk
+                    </>
+                  )}
                 </Button>
                 <p className="text-center text-sm text-gray-600 dark:text-gray-300">
                   Belum Punya Akun?{" "}
