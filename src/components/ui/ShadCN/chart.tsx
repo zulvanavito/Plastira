@@ -1,50 +1,53 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import * as RechartsPrimitive from "recharts"
+import * as React from "react";
+import * as RechartsPrimitive from "recharts";
+import {
+  NameType,
+  ValueType,
+} from "recharts/types/component/DefaultTooltipContent";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
-// Format: { THEME_NAME: CSS_SELECTOR }
-const THEMES = { light: "", dark: ".dark" } as const
+const THEMES = { light: "", dark: ".dark" } as const;
 
 export type ChartConfig = {
   [k in string]: {
-    label?: React.ReactNode
-    icon?: React.ComponentType
+    label?: React.ReactNode;
+    icon?: React.ComponentType;
   } & (
     | { color?: string; theme?: never }
     | { color?: never; theme: Record<keyof typeof THEMES, string> }
-  )
-}
+  );
+};
 
 type ChartContextProps = {
-  config: ChartConfig
-}
+  config: ChartConfig;
+};
 
-const ChartContext = React.createContext<ChartContextProps | null>(null)
+const ChartContext = React.createContext<ChartContextProps | null>(null);
 
 function useChart() {
-  const context = React.useContext(ChartContext)
+  const context = React.useContext(ChartContext);
 
   if (!context) {
-    throw new Error("useChart must be used within a <ChartContainer />")
+    throw new Error("useChart must be used within a <ChartContainer />");
   }
 
-  return context
+  return context;
 }
 
 const ChartContainer = React.forwardRef<
   HTMLDivElement,
   React.ComponentProps<"div"> & {
-    config: ChartConfig
+    config: ChartConfig;
     children: React.ComponentProps<
       typeof RechartsPrimitive.ResponsiveContainer
-    >["children"]
+    >["children"];
   }
 >(({ id, className, children, config, ...props }, ref) => {
-  const uniqueId = React.useId()
-  const chartId = `chart-${id || uniqueId.replace(/:/g, "")}`
+  const uniqueId = React.useId();
+  const chartId = `chart-${id || uniqueId.replace(/:/g, "")}`;
 
   return (
     <ChartContext.Provider value={{ config }}>
@@ -63,17 +66,17 @@ const ChartContainer = React.forwardRef<
         </RechartsPrimitive.ResponsiveContainer>
       </div>
     </ChartContext.Provider>
-  )
-})
-ChartContainer.displayName = "ChartContainer"
+  );
+});
+ChartContainer.displayName = "ChartContainer";
 
 const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
   const colorConfig = Object.entries(config).filter(
     ([, config]) => config.theme || config.color
-  )
+  );
 
   if (!colorConfig.length) {
-    return null
+    return null;
   }
 
   return (
@@ -88,8 +91,8 @@ ${colorConfig
   .map(([key, itemConfig]) => {
     const color =
       itemConfig.theme?.[theme as keyof typeof itemConfig.theme] ||
-      itemConfig.color
-    return color ? `  --color-${key}: ${color};` : null
+      itemConfig.color;
+    return color ? `  --color-${key}: ${color};` : null;
   })
   .join("\n")}
 }
@@ -98,19 +101,20 @@ ${colorConfig
           .join("\n"),
       }}
     />
-  )
-}
+  );
+};
 
-const ChartTooltip = RechartsPrimitive.Tooltip
+const ChartTooltip = RechartsPrimitive.Tooltip;
 
 const ChartTooltipContent = React.forwardRef<
   HTMLDivElement,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   RechartsPrimitive.TooltipProps<any, any>
 >(({ active, payload, label }, ref) => {
-  const { config } = useChart()
-  
+  const { config } = useChart();
+
   if (!active || !payload || payload.length === 0) {
-    return null
+    return null;
   }
 
   return (
@@ -120,56 +124,52 @@ const ChartTooltipContent = React.forwardRef<
     >
       <div className="font-medium">{label}</div>
       {payload.map((item) => {
-        const key = item.dataKey as string
-        const itemConfig = config[key]
-        
+        const key = item.dataKey as string;
+        const itemConfig = config[key];
+
         return (
           <div key={item.dataKey} className="flex items-center gap-2">
             <div
               className="h-2.5 w-2.5 shrink-0 rounded-[2px]"
               style={{ backgroundColor: item.color }}
             />
-            <p className="text-muted-foreground">{itemConfig?.label || item.name}</p>
+            <p className="text-muted-foreground">
+              {itemConfig?.label || item.name}
+            </p>
             <p className="font-medium">{item.value}</p>
           </div>
-        )
+        );
       })}
     </div>
-  )
-})
-ChartTooltipContent.displayName = "ChartTooltipContent"
+  );
+});
+ChartTooltipContent.displayName = "ChartTooltipContent";
 
-const ChartLegend = RechartsPrimitive.Legend
+const ChartLegend = RechartsPrimitive.Legend;
 
 const ChartLegendContent = React.forwardRef<
   HTMLDivElement,
-  React.ComponentProps<"div"> &
-    Pick<RechartsPrimitive.LegendProps, "payload">
+  React.ComponentProps<"div"> & Pick<RechartsPrimitive.LegendProps, "payload">
 >(({ className, payload }, ref) => {
-  const { config } = useChart()
-  
+  const { config } = useChart();
+
   if (!payload) {
-    return null
+    return null;
   }
 
   return (
     <div
       ref={ref}
-      className={cn(
-        "flex items-center justify-center gap-4",
-        className
-      )}
+      className={cn("flex items-center justify-center gap-4", className)}
     >
       {payload.map((item) => {
-        const key = item.dataKey as string
-        const itemConfig = config[key]
+        const key = item.dataKey as string;
+        const itemConfig = config[key];
 
         return (
           <div
             key={item.value as string}
-            className={cn(
-              "flex items-center gap-1.5 [&>svg]:h-3 [&>svg]:w-3"
-            )}
+            className={cn("flex items-center gap-1.5 [&>svg]:h-3 [&>svg]:w-3")}
           >
             <div
               className="h-2 w-2 shrink-0 rounded-[2px]"
@@ -177,14 +177,14 @@ const ChartLegendContent = React.forwardRef<
                 backgroundColor: item.color,
               }}
             />
-             <span>{itemConfig?.label || item.value}</span>
+            <span>{itemConfig?.label || item.value}</span>
           </div>
-        )
+        );
       })}
     </div>
-  )
-})
-ChartLegendContent.displayName = "ChartLegendContent"
+  );
+});
+ChartLegendContent.displayName = "ChartLegendContent";
 
 export {
   ChartContainer,
@@ -193,4 +193,4 @@ export {
   ChartLegend,
   ChartLegendContent,
   ChartStyle,
-}
+};
