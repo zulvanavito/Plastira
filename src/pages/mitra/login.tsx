@@ -12,12 +12,12 @@ import { Input } from "@/components/ui/ShadCN/input";
 import { Button } from "@/components/ui/ShadCN/button";
 import { toast } from "sonner";
 import Link from "next/link";
-import { Building } from "lucide-react"; // Menggunakan ikon yang relevan
+import { Building, Loader } from "lucide-react";
 
 export default function MitraLoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false); // Tambahkan state loading
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -84,8 +84,17 @@ export default function MitraLoginPage() {
                   className="w-full cursor-pointer"
                   disabled={loading}
                 >
-                  <Building className="mr-2 size-5" />
-                  {loading ? "Memproses..." : "Masuk sebagai Mitra"}
+                  {loading ? (
+                    <>
+                      <Loader className="mr-2 size-5 animate-spin" />
+                      Memproses...
+                    </>
+                  ) : (
+                    <>
+                      <Building className="mr-2 size-5" />
+                      Masuk sebagai Mitra
+                    </>
+                  )}
                 </Button>
                 <p className="text-center text-sm text-gray-600 dark:text-gray-300">
                   Belum Punya Akun Mitra?{" "}
@@ -96,7 +105,7 @@ export default function MitraLoginPage() {
                     Daftar di sini
                   </Link>
                 </p>
-                <p className="text-center text-sm text-gray-600">
+                <p className="text-center text-sm text-[#23A4Da]">
                   Bukan mitra?{" "}
                   <Link
                     href="/login"

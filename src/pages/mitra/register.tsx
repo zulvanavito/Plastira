@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/ShadCN/input";
 import { Button } from "@/components/ui/ShadCN/button";
 import { toast } from "sonner";
 import Link from "next/link";
-import { UserPlus } from "lucide-react";
+import { UserPlus, Loader } from "lucide-react";
 
 export default function MitraRegisterPage() {
   const [companyName, setCompanyName] = useState("");
@@ -161,8 +161,17 @@ export default function MitraRegisterPage() {
                   className="w-full cursor-pointer"
                   disabled={loading}
                 >
-                  <UserPlus className="mr-2 size-5" />
-                  {loading ? "Mendaftar..." : "Daftar sebagai Mitra"}
+                  {loading ? (
+                    <>
+                      <Loader className="mr-2 size-5 animate-spin" />
+                      Mendaftar...
+                    </>
+                  ) : (
+                    <>
+                      <UserPlus className="mr-2 size-5" />
+                      Daftar Akun Mitra
+                    </>
+                  )}
                 </Button>
                 <p className="text-center text-sm text-gray-600 dark:text-gray-300">
                   Sudah Punya Akun Mitra?{" "}

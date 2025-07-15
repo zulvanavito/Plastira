@@ -6,7 +6,6 @@ import Image from "next/image";
 export default function Home() {
   return (
     <main className="relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden text-white">
-      {/* --- Latar Belakang Gambar --- */}
       <div className="absolute inset-0 z-0">
         <Image
           src="/img/kids-in-the-water.jpg"
@@ -18,7 +17,6 @@ export default function Home() {
         <div className="absolute inset-0 bg-black/60 bg-gradient-to-t from-black/70 via-transparent to-black/20"></div>
       </div>
 
-      {/* --- Konten Utama --- */}
       <div className="container z-10 flex flex-col items-center gap-6 px-4 text-center">
         <div className="animate-fade-in-up flex flex-col items-center gap-6">
           <h1 className="text-4xl font-extrabold tracking-tighter text-white drop-shadow-lg md:text-5xl lg:text-6xl">
@@ -52,7 +50,6 @@ export default function Home() {
               </Button>
             </Link>
 
-            {/* --- TAMBAHAN BARU DI SINI --- */}
             <Link href="/mitra/login" className="w-full sm:w-auto">
               <Button
                 size="lg"

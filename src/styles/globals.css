@@ -13,10 +13,10 @@
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.141 0.005 285.823);
 
-  /* --- WARNA BARU UNTUK LIGHT MODE --- */
-  --primary: oklch(0.68 0.174 233.32); /* #23A4DA */
-  --primary-foreground: oklch(1 0 0); /* Putih, agar kontras */
-  --ring: oklch(0.68 0.174 233.32); /* #23A4DA */
+ 
+  --primary: oklch(0.68 0.174 233.32);
+  --primary-foreground: oklch(1 0 0); 
+  --ring: oklch(0.68 0.174 233.32); 
 
   --secondary: oklch(0.967 0.001 286.375);
   --secondary-foreground: oklch(0.21 0.006 285.885);
@@ -50,10 +50,10 @@
   --popover: oklch(0.21 0.006 285.885);
   --popover-foreground: oklch(0.985 0 0);
 
-  /* --- WARNA BARU UNTUK DARK MODE --- */
-  --primary: oklch(0.68 0.174 233.32); /* #23A4DA */
-  --primary-foreground: oklch(1 0 0); /* Putih, agar kontras */
-  --ring: oklch(0.68 0.174 233.32); /* #23A4DA */
+  
+  --primary: oklch(0.68 0.174 233.32);
+  --primary-foreground: oklch(1 0 0);
+  --ring: oklch(0.68 0.174 233.32); 
 
   --secondary: oklch(0.274 0.006 286.033);
   --secondary-foreground: oklch(0.985 0 0);
@@ -172,4 +172,19 @@ body {
   background: linear-gradient(-45deg, #0a2e3e, #104a60, #23a4da, #1b8db8);
   background-size: 400% 400%;
   animation: gradient-animation 15s ease infinite;
+}
+
+@layer utilities {
+  .animate-spin {
+    animation: spin 2s linear infinite;
+  }
+
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
 }

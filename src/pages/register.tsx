@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/ShadCN/input";
 import { Button } from "@/components/ui/ShadCN/button";
 import { toast } from "sonner";
 import Link from "next/link";
-import { UserPlus } from "lucide-react";
+import { UserPlus, Loader } from "lucide-react";
 
 export default function RegisterPage() {
   const [name, setName] = useState("");
@@ -128,8 +128,17 @@ export default function RegisterPage() {
                   className="w-full cursor-pointer"
                   disabled={loading}
                 >
-                  <UserPlus className="mr-2 size-5" />
-                  {loading ? "Mendaftar..." : "Daftar"}
+                  {loading ? (
+                    <>
+                      <Loader className="mr-2 size-5 animate-spin" />
+                      Mendaftar...
+                    </>
+                  ) : (
+                    <>
+                      <UserPlus className="mr-2 size-5" />
+                      Daftar
+                    </>
+                  )}
                 </Button>
                 <p className="text-center text-sm text-gray-600 dark:text-gray-300">
                   Sudah Punya Akun?{" "}
