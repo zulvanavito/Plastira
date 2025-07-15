@@ -56,19 +56,27 @@ export default function MitraDashboardPage() {
     router.push("/mitra/login");
   };
 
-  if (loading) return <p>Memuat data dashboard...</p>;
+  if (loading)
+    return <p className="text-slate-800">Memuat data dashboard...</p>;
 
   return (
     <div className="min-h-screen bg-slate-50 p-8">
       <header className="mb-8 flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Dashboard Mitra</h1>
-        <Button onClick={handleLogout} variant="outline" size="sm">
+        <h1 className="text-3xl font-bold text-slate-800">Dashboard Mitra</h1>
+        <Button
+          onClick={handleLogout}
+          variant="outline"
+          size="sm"
+          className=" cursor-pointer hover:bg-[#23A4DA] hover:text-white"
+        >
           <LogOut className="mr-2 size-4" /> Logout
         </Button>
       </header>
 
       <section className="mb-8">
-        <h2 className="text-2xl font-semibold mb-4">Laporan Dampak Anda</h2>
+        <h2 className="text-2xl font-semibold mb-4 text-slate-800">
+          Laporan Dampak Anda
+        </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <StatCard
             icon={<Leaf />}
@@ -89,7 +97,9 @@ export default function MitraDashboardPage() {
       </section>
 
       <section>
-        <h2 className="text-2xl font-semibold mb-4">Voucher Aktif Anda</h2>
+        <h2 className="text-2xl font-semibold mb-4 text-slate-800">
+          Voucher Aktif Anda
+        </h2>
         <Card>
           <CardContent className="pt-6">
             {vouchers.length > 0 ? (

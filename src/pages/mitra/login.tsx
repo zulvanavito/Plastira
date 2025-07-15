@@ -48,8 +48,8 @@ export default function MitraLoginPage() {
         <CardContent>
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
-              <Label htmlFor="email" className="mb-4">
-                Email Perusahaan<b className="text-red-500">*</b>
+              <Label htmlFor="email" className="mb-4" required>
+                Email Perusahaan
               </Label>
               <Input
                 id="email"
@@ -61,8 +61,8 @@ export default function MitraLoginPage() {
               />
             </div>
             <div>
-              <Label htmlFor="password" className="mb-4">
-                Password<b className="text-red-500">*</b>
+              <Label htmlFor="password" required className="mb-4">
+                Password
               </Label>
               <Input
                 id="password"
@@ -80,7 +80,7 @@ export default function MitraLoginPage() {
             <p className="text-center text-sm text-gray-600">
               Belum jadi mitra? {""}{" "}
               <Link
-                href="/register"
+                href="/mitra/register"
                 className="font-semibold text-[#23A4DA] hover:underline"
               >
                 Daftar di sini

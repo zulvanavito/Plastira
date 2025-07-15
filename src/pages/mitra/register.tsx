@@ -66,7 +66,7 @@ export default function MitraRegisterPage() {
         <CardContent>
           <form onSubmit={handleRegister} className="space-y-4">
             <div>
-              <Label htmlFor="companyName" required>
+              <Label className="mb-3" htmlFor="companyName" required>
                 Nama Perusahaan/Instansi
               </Label>
               <Input
@@ -79,7 +79,7 @@ export default function MitraRegisterPage() {
               />
             </div>
             <div>
-              <Label htmlFor="industry" required>
+              <Label className="mb-3" htmlFor="industry" required>
                 Industri
               </Label>
               <Input
@@ -92,7 +92,7 @@ export default function MitraRegisterPage() {
               />
             </div>
             <div>
-              <Label htmlFor="email" required>
+              <Label className="mb-3" htmlFor="email" required>
                 Email Kontak
               </Label>
               <Input
@@ -105,7 +105,7 @@ export default function MitraRegisterPage() {
               />
             </div>
             <div>
-              <Label htmlFor="password" required>
+              <Label className="mb-3" htmlFor="password" required>
                 Password
               </Label>
               <Input
