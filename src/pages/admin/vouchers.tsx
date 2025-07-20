@@ -115,7 +115,6 @@ export default function AdminVouchersPage() {
     }
   };
 
-  // Handler saat form di-submit (untuk Add dan Edit)
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -137,12 +136,10 @@ export default function AdminVouchersPage() {
 
     try {
       if (editingVoucher) {
-        // Mode Edit (mengirim request PUT)
         formData.append("id", editingVoucher._id);
         await axios.put("/api/admin/vouchers", formData, { headers });
         toast.success("Voucher berhasil diperbarui!");
       } else {
-        // Mode Tambah (mengirim request POST)
         await axios.post("/api/admin/vouchers", formData, { headers });
         toast.success("Voucher berhasil ditambahkan!");
       }
@@ -211,7 +208,6 @@ export default function AdminVouchersPage() {
           </Link>
         </header>
 
-        {/* --- Dialog untuk Add & Edit --- */}
         <Dialog
           open={isModalOpen}
           onOpenChange={(open) => {
@@ -334,7 +330,6 @@ export default function AdminVouchersPage() {
           </DialogContent>
         </Dialog>
 
-        {/* --- Dialog untuk Konfirmasi Delete --- */}
         <Dialog open={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
           <DialogContent className="bg-white text-slate-800">
             <DialogHeader>
@@ -368,7 +363,6 @@ export default function AdminVouchersPage() {
           </DialogContent>
         </Dialog>
 
-        {/* --- Tabel Daftar Voucher --- */}
         <Card className="text-slate-800">
           <CardHeader className="flex justify-between">
             <div>

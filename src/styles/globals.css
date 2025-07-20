@@ -13,10 +13,9 @@
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.141 0.005 285.823);
 
- 
   --primary: oklch(0.68 0.174 233.32);
-  --primary-foreground: oklch(1 0 0); 
-  --ring: oklch(0.68 0.174 233.32); 
+  --primary-foreground: oklch(1 0 0);
+  --ring: oklch(0.68 0.174 233.32);
 
   --secondary: oklch(0.967 0.001 286.375);
   --secondary-foreground: oklch(0.21 0.006 285.885);
@@ -50,10 +49,9 @@
   --popover: oklch(0.21 0.006 285.885);
   --popover-foreground: oklch(0.985 0 0);
 
-  
   --primary: oklch(0.68 0.174 233.32);
   --primary-foreground: oklch(1 0 0);
-  --ring: oklch(0.68 0.174 233.32); 
+  --ring: oklch(0.68 0.174 233.32);
 
   --secondary: oklch(0.274 0.006 286.033);
   --secondary-foreground: oklch(0.985 0 0);
@@ -202,7 +200,7 @@ body {
 .aurora-shape {
   position: absolute;
   border-radius: 100%;
-  filter: blur(80px); /* Kunci dari efek glassmorphism */
+  filter: blur(80px);
   opacity: 0.4;
 }
 
@@ -213,8 +211,7 @@ body {
 .aurora-shape-1 {
   width: 400px;
   height: 400px;
-  background-color: #00a7ed; /* Warna utama Plastira */
-  top: 10%;
+  background-color: #00a7ed;
   left: 15%;
   animation: move-aurora-1 20s infinite alternate;
 }
@@ -238,16 +235,28 @@ body {
 }
 
 @keyframes move-aurora-1 {
-  from { transform: translate(-50px, -50px) rotate(0deg); }
-  to { transform: translate(50px, 80px) rotate(180deg); }
+  from {
+    transform: translate(-50px, -50px) rotate(0deg);
+  }
+  to {
+    transform: translate(50px, 80px) rotate(180deg);
+  }
 }
 
 @keyframes move-aurora-2 {
-  from { transform: translate(30px, 50px) rotate(0deg); }
-  to { transform: translate(-60px, -40px) rotate(220deg); }
+  from {
+    transform: translate(30px, 50px) rotate(0deg);
+  }
+  to {
+    transform: translate(-60px, -40px) rotate(220deg);
+  }
 }
 
 @keyframes move-aurora-3 {
-  from { transform: translate(-20px, 40px) rotate(0deg); }
-  to { transform: translate(40px, -60px) rotate(150deg); }
+  from {
+    transform: translate(-20px, 40px) rotate(0deg);
+  }
+  to {
+    transform: translate(40px, -60px) rotate(150deg);
+  }
 }

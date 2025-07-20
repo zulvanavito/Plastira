@@ -87,7 +87,6 @@ export default function Home() {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
         >
-          {/* ... Konten Hero Section tetap sama ... */}
           <div className="flex flex-col items-center gap-6">
             <motion.h1
               className="text-4xl font-extrabold tracking-tighter text-white drop-shadow-lg md:text-5xl lg:text-6xl"
@@ -144,7 +143,6 @@ export default function Home() {
         </motion.div>
       </main>
 
-      {/* --- SEKSI BARU DENGAN FULL SCREEN & ANIMASI --- */}
       <div className="w-full bg-white text-slate-800 dark:bg-slate-950 dark:text-white">
         {/* --- SEKSI CARA KERJA (FULL SCREEN) --- */}
         <section className="min-h-screen w-full flex flex-col justify-center">
@@ -203,7 +201,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* --- SEKSI FITUR UNGGULAN (FULL SCREEN) --- */}
         <section className="min-h-screen bg-slate-50 dark:bg-slate-900 w-full flex flex-col justify-center">
           <div className="container mx-auto px-4 py-16">
             <h2 className="text-center text-3xl font-bold">
