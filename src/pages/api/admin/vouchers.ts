@@ -51,8 +51,6 @@ export default async function handler(
 
           if (imageFile) {
             const fileBuffer = fs.readFileSync(imageFile.filepath);
-
- voucher-new
             const blob = await put(
               `vouchers/${Date.now()}-${imageFile.originalFilename}`,
               fileBuffer,
@@ -60,11 +58,6 @@ export default async function handler(
                 access: "public",
               }
             );
-
-          
-            await fs.copyFile(imageFile.filepath, newFilePath);
-           
- main
 
             imageUrl = blob.url;
           }
@@ -119,9 +112,7 @@ export default async function handler(
               );
             }
 
- voucher-new
             const fileBuffer = fs.readFileSync(imageFile.filepath);
-
             const blob = await put(
               `vouchers/${Date.now()}-${imageFile.originalFilename}`,
               fileBuffer,
@@ -129,16 +120,7 @@ export default async function handler(
                 access: "public",
               }
             );
-
             voucher.imageUrl = blob.url;
-
-            const newFileName = `${Date.now()}_${imageFile.originalFilename}`;
-            const newFilePath = path.join(UPLOAD_DIR, newFileName);
-
-            await fs.copyFile(imageFile.filepath, newFilePath);
-
-            voucher.imageUrl = `/uploads/vouchers/${newFileName}`;
- main
           }
 
           await voucher.save();
