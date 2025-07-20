@@ -2,7 +2,6 @@ import { Card, CardContent } from "@/components/ui/ShadCN/card";
 import { cn } from "@/lib/utils";
 import { CheckCircle, Loader, Trash2, XCircle } from "lucide-react";
 
-// Pastikan tipe ini sesuai dengan data yang kamu punya
 interface Pickup {
   _id: string;
   plasticType: string;
@@ -33,7 +32,10 @@ const statusInfo = {
   },
 };
 
-export const RecentPickupCard = ({ pickup, onClick }: RecentPickupCardProps) => {
+export const RecentPickupCard = ({
+  pickup,
+  onClick,
+}: RecentPickupCardProps) => {
   const { icon, text, bg } = statusInfo[pickup.status];
 
   return (

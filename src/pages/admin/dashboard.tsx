@@ -313,7 +313,6 @@ export default function AdminPickupPage() {
           />
         </Card>
 
-        {/* --- Peta dan Heatmap --- */}
         <div className="relative z-10 mt-8 grid grid-cols-1 gap-8 lg:grid-cols-2">
           {/* Peta Sebaran Titik */}
           <Card className="rounded-2xl shadow-sm">
@@ -329,7 +328,6 @@ export default function AdminPickupPage() {
             </CardContent>
           </Card>
 
-          {/* Peta Panas (Heatmap) */}
           <Card className="rounded-2xl shadow-sm">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
