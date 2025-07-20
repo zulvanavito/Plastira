@@ -1,10 +1,13 @@
-import { Server as NetServer } from "http";
+// Impor http.Server buat tipe yang lebih spesifik
+import { Server as HttpServer } from "http";
+import { Socket } from "net";
 import { NextApiRequest, NextApiResponse } from "next";
 import { Server as ServerIO } from "socket.io";
 
+// Tipe ini sekarang lebih akurat, jadi TypeScript ngerti
 type NextApiResponseWithSocket = NextApiResponse & {
-  socket: NetServer & {
-    server: NetServer & {
+  socket: Socket & {
+    server: HttpServer & {
       io?: ServerIO;
     };
   };
@@ -16,18 +19,19 @@ export const config = {
   },
 };
 
-const socketHandler = (_req: NextApiRequest, res: NextApiResponseWithSocket) => {
-  if (!res.socket.server.io) {
+const socketHandler = (
+  _req: NextApiRequest,
+  res: NextApiResponseWithSocket
+) => {
+  if (res.socket.server.io) {
+    console.log("✅ Socket.IO server already running.");
+  } else {
     console.log("🚀 Socket.IO server is starting...");
-    
-    // Ambil http server dari response
-    const httpServer: NetServer = res.socket.server;
-    const io = new ServerIO(httpServer, {
+    // Sekarang udah nggak perlu `as any` lagi, lebih clean
+    const io = new ServerIO(res.socket.server, {
       path: "/api/socket",
       addTrailingSlash: false,
     });
-
-    // Simpan instance io di server biar bisa dipake lagi
     res.socket.server.io = io;
 
     io.on("connection", (socket) => {
@@ -40,9 +44,6 @@ const socketHandler = (_req: NextApiRequest, res: NextApiResponseWithSocket) => 
         console.log(`👋 User disconnected: ${socket.id}`);
       });
     });
-
-  } else {
-    console.log("✅ Socket.IO server already running.");
   }
   res.end();
 };
