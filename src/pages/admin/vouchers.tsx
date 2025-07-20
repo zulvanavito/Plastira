@@ -426,7 +426,7 @@ export default function AdminVouchersPage() {
                               </div>
                             )}
                           </TableCell>
-                          <TableCell className="font-medium text-center">
+                          <TableCell className="font-medium text-center whitespace-normal">
                             {v.name}
                           </TableCell>
                           <TableCell className="max-w-xs truncate whitespace-normal">
