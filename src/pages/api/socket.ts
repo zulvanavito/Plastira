@@ -16,14 +16,18 @@ export const config = {
   },
 };
 
-const socketHandler = (req: NextApiRequest, res: NextApiResponseWithSocket) => {
+const socketHandler = (_req: NextApiRequest, res: NextApiResponseWithSocket) => {
   if (!res.socket.server.io) {
     console.log("🚀 Socket.IO server is starting...");
-    const io = new ServerIO(res.socket.server as NetServer, {
+    
+    // Ambil http server dari response
+    const httpServer: NetServer = res.socket.server;
+    const io = new ServerIO(httpServer, {
       path: "/api/socket",
       addTrailingSlash: false,
     });
 
+    // Simpan instance io di server biar bisa dipake lagi
     res.socket.server.io = io;
 
     io.on("connection", (socket) => {
@@ -36,6 +40,7 @@ const socketHandler = (req: NextApiRequest, res: NextApiResponseWithSocket) => {
         console.log(`👋 User disconnected: ${socket.id}`);
       });
     });
+
   } else {
     console.log("✅ Socket.IO server already running.");
   }
