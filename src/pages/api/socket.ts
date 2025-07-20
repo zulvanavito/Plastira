@@ -1,10 +1,8 @@
-// Impor http.Server buat tipe yang lebih spesifik
 import { Server as HttpServer } from "http";
 import { Socket } from "net";
 import { NextApiRequest, NextApiResponse } from "next";
 import { Server as ServerIO } from "socket.io";
 
-// Tipe ini sekarang lebih akurat, jadi TypeScript ngerti
 type NextApiResponseWithSocket = NextApiResponse & {
   socket: Socket & {
     server: HttpServer & {
@@ -27,7 +25,7 @@ const socketHandler = (
     console.log("✅ Socket.IO server already running.");
   } else {
     console.log("🚀 Socket.IO server is starting...");
-    // Sekarang udah nggak perlu `as any` lagi, lebih clean
+
     const io = new ServerIO(res.socket.server, {
       path: "/api/socket",
       addTrailingSlash: false,

@@ -30,7 +30,6 @@ export default async function handler(
 ) {
   await dbConnect();
 
-  // Verifikasi token admin
   try {
     const tokenPayload = verifyToken(req);
     if (tokenPayload.role !== "admin") {
@@ -70,7 +69,9 @@ export default async function handler(
             const newFileName = `${Date.now()}_${imageFile.originalFilename}`;
             const newFilePath = path.join(UPLOAD_DIR, newFileName);
 
-            await fs.rename(imageFile.filepath, newFilePath);
+            // --- PERUBAHAN DI SINI ---
+            await fs.copyFile(imageFile.filepath, newFilePath);
+            // --- BATAS PERUBAHAN ---
 
             imageUrl = `/uploads/vouchers/${newFileName}`;
           }
@@ -140,7 +141,9 @@ export default async function handler(
 
             const newFileName = `${Date.now()}_${imageFile.originalFilename}`;
             const newFilePath = path.join(UPLOAD_DIR, newFileName);
-            await fs.rename(imageFile.filepath, newFilePath);
+
+            await fs.copyFile(imageFile.filepath, newFilePath);
+
             voucher.imageUrl = `/uploads/vouchers/${newFileName}`;
           }
 
@@ -154,12 +157,9 @@ export default async function handler(
 
     case "DELETE":
       try {
-        // --- UBAH BARIS INI ---
-        const { id } = req.query; // Ambil ID dari query URL, bukan body
-        // --- BATAS AKHIR PERUBAHAN ---
+        const { id } = req.query;
 
         if (!id || typeof id !== "string") {
-          // Tambah pengecekan tipe
           return res.status(400).json({ msg: "Voucher ID diperlukan." });
         }
 
@@ -168,7 +168,6 @@ export default async function handler(
           return res.status(404).json({ msg: "Voucher tidak ditemukan." });
         }
 
-        // Hapus gambar terkait jika ada
         if (voucher.imageUrl) {
           const imagePath = path.join(
             process.cwd(),
@@ -182,7 +181,6 @@ export default async function handler(
           }
         }
 
-        // Hapus voucher dari database
         await Voucher.findByIdAndDelete(id);
 
         res.status(200).json({ msg: "Voucher berhasil dihapus." });
@@ -192,7 +190,7 @@ export default async function handler(
       break;
 
     default:
-      res.setHeader("Allow", ["GET", "POST"]);
+      res.setHeader("Allow", ["GET", "POST", "PUT", "DELETE"]);
       res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 }

@@ -10,7 +10,6 @@ export default async function handler(
 
   await dbConnect();
   try {
-    // Ambil semua user, pilih hanya nama dan poin, urutkan dari poin tertinggi, dan batasi 100 teratas
     const users = await User.find({})
       .select("name points")
       .sort({ points: -1 })
